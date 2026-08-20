@@ -174,7 +174,22 @@ let EVENTOS = [];
 let CRONOMETRO = null;
 
 // ───────── Arranque ─────────
+// Si la dirección trae #cal=..., la guardamos y la borramos de la barra,
+// para no tener que copiar el link a mano en el teléfono.
+function configuracionPorEnlace() {
+  const m = location.hash.match(/[#&]cal=([^&]+)/);
+  if (!m) return false;
+  try {
+    const url = decodeURIComponent(m[1]);
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(url)) return false;
+    Guardado.escribir('urlCalendario', url);
+    history.replaceState(null, '', location.pathname);
+    return true;
+  } catch { return false; }
+}
+
 function arrancar() {
+  configuracionPorEnlace();
   const url = Guardado.leer('urlCalendario', null);
   if (!url) return mostrarSetup();
 

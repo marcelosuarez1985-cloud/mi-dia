@@ -70,8 +70,9 @@ function minutosTraslado(titulo, lugar, tipo) {
     return 5;                                          // SportClub Flores, 3 cuadras
   }
   if (tipo === 'docencia') {
-    if (/p\.c\.|parque chacabuco/.test(t)) return 70;  // cerca: ingresa 1 h antes
-    return 120;                                         // resto de las sedes: 2 h antes
+    if (/p\.c\.|parque chacabuco/.test(t)) return 70;   // cerca: ingresa 1 h antes
+    if (/flacso/.test(t)) return 60;                    // en FLACSO no prepara nada: 1 h alcanza
+    return 120;                                          // resto de las sedes: 2 h antes
   }
   return 0;
 }
