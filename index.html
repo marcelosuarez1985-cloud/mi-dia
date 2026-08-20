@@ -102,6 +102,22 @@
     background: #e9f5ee; color: var(--entrenamiento); vertical-align: middle;
   }
 
+  /* Bloque del programa de clases dentro de cada evento */
+  .clase {
+    margin-top: 9px; padding: 10px 12px; border-radius: 9px;
+    background: #f7f5f1; border: 1px solid var(--borde); font-size: 14px; line-height: 1.45;
+  }
+  .clase + .clase { margin-top: 6px; }
+  .clase.mia { background: #eef3fb; border-color: #c4d3ea; }
+  .clase .quien {
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; margin-bottom: 3px;
+  }
+  .clase.mia .quien  { color: var(--docencia); }
+  .clase.otro .quien { color: var(--texto-suave); }
+  .clase .tema { font-weight: 600; color: var(--texto); }
+  .clase .meta { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
+
   .alerta {
     background: var(--alerta-bg); border: 1px solid #f0cfc4; border-radius: 12px;
     padding: 12px 15px; margin-bottom: 9px; font-size: 14px;
@@ -150,6 +166,7 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
+<script src="programa.js"></script>
 <script src="app.js"></script>
 <script src="salidas.js"></script>
 <script>
@@ -290,6 +307,11 @@ function dibujar(sinConexion) {
     html.push('<div class="estado" style="padding:24px 10px">Ya no te queda nada por hoy.</div>');
   } else {
     for (const a of detectarAlertas(deHoy)) html.push(`<div class="alerta">${esc(a)}</div>`);
+    // Clase tuya que el calendario no refleja (ej: ese jueves das en FLACSO, no en Delfos)
+    for (const c of clasesSinEvento(deHoy, hoy.clave)) {
+      html.push(`<div class="alerta">Hoy das clase en <b>${esc(c.sede ? c.sede.nombre : c.sedeCod)}</b>
+        de ${esc(c.sede ? c.sede.hora : '')} — «${esc(c.tema)}» — y eso no figura en tu calendario.</div>`);
+    }
     const registro = Salidas.registro();
     for (const ev of deHoy) {
       if (ev.salida) {
@@ -368,7 +390,23 @@ function tarjeta(ev, ahora) {
     <div class="titulo">${esc(ev.titulo)}</div>
     ${ev.lugar ? `<div class="lugar">${esc(ev.lugar)}</div>` : ''}
     ${ev.descripcion ? `<div class="desc">${esc(ev.descripcion)}</div>` : ''}
+    ${bloqueClases(ev)}
   </div>`;
+}
+
+// Qué se da en ese evento: tu clase, o quién la da si no te toca
+function bloqueClases(ev) {
+  const clases = programaDeEvento(ev);
+  if (!clases.length) return '';
+  return clases.map(c => {
+    const cursada = c.sede ? c.sede.detalle : '';
+    return `<div class="clase ${c.esMio ? 'mia' : 'otro'}">
+      <div class="quien">${c.esMio ? '★ Te toca a vos' : 'Da ' + esc(c.responsable)}${
+        cursada ? ' · ' + esc(cursada) : ''}</div>
+      <div class="tema">${esc(c.tema)}</div>
+      ${c.unidad ? `<div class="meta">Unidad ${esc(c.unidad.replace('U','').replace('-',' · clase '))}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 function marcarCasa(boton) {

@@ -200,3 +200,31 @@ function calcularCierre(eventos, hoy, ahora) {
       `Es la hora tope, no una recomendación: si cortás antes, mejor.`
   };
 }
+
+// ───────── Cruce con el programa de clases ─────────
+// Une un evento del calendario con las filas del programa de esa fecha y sede.
+const SEDE_POR_LUGAR = {
+  'Delfos (Recoleta)': ['D1', 'D2'],
+  'FLACSO (Recoleta)': ['FL'],
+  'FLACSO':            ['FL'],
+  'Villa del Parque':  ['VP'],
+  'Parque Chacabuco':  ['PC']
+};
+
+function programaDeEvento(ev) {
+  if (typeof clasesDelDia !== 'function') return [];
+  const codigos = SEDE_POR_LUGAR[ev.lugar];
+  if (!codigos) return [];
+  return clasesDelDia(ev.clave).filter(c => codigos.indexOf(c.sedeCod) !== -1);
+}
+
+// Detecta que ese día das clase en una sede que no figura en tu calendario.
+function clasesSinEvento(evsDelDia, clave) {
+  if (typeof misClasesDelDia !== 'function') return [];
+  const cubiertas = [];
+  for (const ev of evsDelDia) {
+    const cods = SEDE_POR_LUGAR[ev.lugar];
+    if (cods) cubiertas.push(...cods);
+  }
+  return misClasesDelDia(clave).filter(c => cubiertas.indexOf(c.sedeCod) === -1);
+}
