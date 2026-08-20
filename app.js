@@ -229,3 +229,45 @@ function clasesSinEvento(evsDelDia, clave) {
   }
   return misClasesDelDia(clave).filter(c => cubiertas.indexOf(c.sedeCod) === -1);
 }
+
+// ───────── Clases de otras sedes, sin evento propio en el calendario ─────────
+// Marce quiere ver qué se dicta en FLACSO aunque ese jueves no le toque a él.
+function clasesInformativas(evsDelDia, clave) {
+  if (typeof clasesDelDia !== 'function') return [];
+  const cubiertas = [];
+  for (const ev of evsDelDia) {
+    const cods = SEDE_POR_LUGAR[ev.lugar];
+    if (cods) cubiertas.push(...cods);
+  }
+  return clasesDelDia(clave)
+    .filter(c => !c.esMio && c.sede && cubiertas.indexOf(c.sedeCod) === -1);
+}
+
+// ───────── Bloques de trabajo en los huecos del día ─────────
+const TRABAJO_DESDE  = 9 * 60;    // no empezamos antes de las 09:00
+const TRABAJO_HASTA  = 19 * 60;   // ni seguimos después de las 19:00
+const HUECO_MINIMO   = 60;        // menos de una hora no da para sentarse a trabajar
+
+function bloquesDeTrabajo(evsDelDia) {
+  // Los domingos son de familia: no se agenda nada.
+  if (evsDelDia.some(e => e.tipo === 'familia')) return [];
+
+  // Un evento ocupa desde que salís de casa hasta que termina.
+  const ocupado = evsDelDia
+    .filter(e => !e.todoElDia)
+    .map(e => [Math.min(e.minIni, e.minSalida), e.minFin])
+    .sort((a, b) => a[0] - b[0]);
+
+  const libres = [];
+  let cursor = TRABAJO_DESDE;
+  for (const [desde, hasta] of ocupado) {
+    if (desde > cursor) libres.push([cursor, Math.min(desde, TRABAJO_HASTA)]);
+    cursor = Math.max(cursor, hasta);
+    if (cursor >= TRABAJO_HASTA) break;
+  }
+  if (cursor < TRABAJO_HASTA) libres.push([cursor, TRABAJO_HASTA]);
+
+  return libres
+    .filter(([a, b]) => b - a >= HUECO_MINIMO)
+    .map(([a, b]) => ({ desde: hhmm(a), hasta: hhmm(b), minutos: b - a, minIni: a, minFin: b }));
+}

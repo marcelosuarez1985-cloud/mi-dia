@@ -118,6 +118,34 @@
   .clase .tema { font-weight: 600; color: var(--texto); }
   .clase .meta { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
 
+  /* Huecos convertidos en bloques de trabajo */
+  .trabajo {
+    border: 1px dashed #c9c2b6; border-radius: 12px; padding: 12px 15px;
+    margin-bottom: 9px; background: transparent;
+  }
+  .trabajo .hora { font-size: 13px; font-weight: 600; color: var(--texto-suave); font-variant-numeric: tabular-nums; }
+  .trabajo .titulo { font-size: 16px; font-weight: 600; margin-top: 2px; color: var(--texto); }
+  .trabajo .nota { font-size: 13px; color: var(--texto-suave); margin-top: 3px; }
+  .trabajo.pasado { opacity: .4; }
+
+  /* Clases de otras sedes, sólo informativas */
+  .otraSede {
+    background: var(--tarjeta); border: 1px solid var(--borde);
+    border-left: 5px solid var(--docencia); border-radius: 12px;
+    padding: 12px 15px; margin-bottom: 9px; opacity: .8;
+  }
+  .otraSede .hora { font-size: 13px; font-weight: 600; color: var(--texto-suave); }
+  .otraSede .titulo { font-size: 15.5px; font-weight: 600; margin-top: 2px; }
+  .otraSede .meta { font-size: 13px; color: var(--texto-suave); margin-top: 3px; }
+
+  /* Aviso de soltar el teléfono */
+  .noche {
+    background: #262420; color: #f4f2ee; border-radius: 16px;
+    padding: 18px; margin-bottom: 14px; text-align: center;
+  }
+  .noche .grande { font-size: 19px; font-weight: 700; }
+  .noche .chico { font-size: 14px; opacity: .85; margin-top: 5px; }
+
   .alerta {
     background: var(--alerta-bg); border: 1px solid #f0cfc4; border-radius: 12px;
     padding: 12px 15px; margin-bottom: 9px; font-size: 14px;
@@ -270,6 +298,15 @@ function dibujar(sinConexion) {
     html.push(`<div class="alerta">Sin conexión — te muestro la última copia que guardé.</div>`);
   }
 
+  // ── Aviso de la noche: soltar el teléfono ──
+  Noche.revisar(hoy, () => dibujar());
+  if (Noche.yaAvisoHoy(hoy.clave)) {
+    html.push(`<div class="noche">
+      <div class="grande">📵 Teléfono a cargar</div>
+      <div class="chico">Estás en casa y pasaron las 22. Dejalo cargando hasta mañana.</div>
+    </div>`);
+  }
+
   // ── Aviso de salida (lo que insiste) ──
   const vigilado = Salidas.vigilar(EVENTOS, hoy, () => dibujar());
   if (vigilado) {
@@ -322,6 +359,25 @@ function dibujar(sinConexion) {
     html.push('<div class="estado" style="padding:24px 10px">Ya no te queda nada por hoy.</div>');
   } else {
     for (const a of detectarAlertas(deHoy)) html.push(`<div class="alerta">${esc(a)}</div>`);
+    // El día se arma intercalando eventos, huecos de trabajo y clases de otras sedes,
+    // todo ordenado por hora para que se lea de corrido.
+    const piezas = [];
+    for (const b of bloquesDeTrabajo(deHoy)) {
+      piezas.push({ orden: b.minIni, html: `<div class="trabajo ${hoy.minutos > b.minFin ? 'pasado' : ''}">
+        <div class="hora">${b.desde} – ${b.hasta}</div>
+        <div class="titulo">🗂️ Bloque de trabajo</div>
+        <div class="nota">${duracionTexto(b.minutos)} libres. Preparación de clases, armado de curso, devoluciones.</div>
+      </div>` });
+    }
+    for (const c of clasesInformativas(deHoy, hoy.clave)) {
+      const [h] = c.sede.hora.split('–');
+      const min = Number(h.slice(0,2)) * 60 + Number(h.slice(3,5));
+      piezas.push({ orden: min, html: `<div class="otraSede">
+        <div class="hora">${esc(c.sede.hora)}</div>
+        <div class="titulo">${esc(c.sede.nombre)} · ${esc(c.sede.detalle)}</div>
+        <div class="meta">Da ${esc(c.responsable)} — ${esc(c.tema)}</div>
+      </div>` });
+    }
     // Clase tuya que el calendario no refleja (ej: ese jueves das en FLACSO, no en Delfos)
     for (const c of clasesSinEvento(deHoy, hoy.clave)) {
       html.push(`<div class="alerta">Hoy das clase en <b>${esc(c.sede ? c.sede.nombre : c.sedeCod)}</b>
@@ -329,6 +385,7 @@ function dibujar(sinConexion) {
     }
     const registro = Salidas.registro();
     for (const ev of deHoy) {
+      let bloque = '';
       if (ev.salida) {
         const r = registro[ev.id];
         let extra = '';
@@ -339,10 +396,13 @@ function dibujar(sinConexion) {
             : `<span class="tarde">saliste ${r.salioA} (${dif} min tarde)</span>`;
         }
         const pasada = hoy.minutos > ev.minSalida && !r;
-        html.push(`<div class="salida" style="${pasada && !r ? 'opacity:.45' : ''}">🚪 Salís de casa <b>${ev.salida}</b> ${extra}</div>`);
+        bloque += `<div class="salida" style="${pasada ? 'opacity:.45' : ''}">🚪 Salís de casa <b>${ev.salida}</b> ${extra}</div>`;
       }
-      html.push(tarjeta(ev, ahora));
+      bloque += tarjeta(ev, ahora);
+      piezas.push({ orden: ev.todoElDia ? -1 : Math.min(ev.minIni, ev.minSalida), html: bloque });
     }
+    piezas.sort((a, b) => a.orden - b.orden);
+    for (const p of piezas) html.push(p.html);
   }
 
   // ── Cierre del día ──

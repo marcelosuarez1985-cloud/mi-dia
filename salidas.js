@@ -145,3 +145,43 @@ function pedirPermisoNotificaciones() {
   if (Notification.permission === 'granted') return Promise.resolve('granted');
   return Notification.requestPermission();
 }
+
+// ═══════════════════════════════════════════════════════════
+//  Aviso de la noche: soltar el teléfono al llegar a casa
+//  Se dispara a partir de las 22:00, sólo si el GPS confirma que estás en casa.
+//  Si llegás más tarde, salta apenas detecta que llegaste.
+// ═══════════════════════════════════════════════════════════
+const HORA_SOLTAR_TELEFONO = 22 * 60;
+
+const Noche = {
+  consultando: false,
+
+  yaAvisoHoy(clave) {
+    return Guardado.leer('avisoNoche', null) === clave;
+  },
+
+  // Se llama en cada tick (cada 30 s) desde la pantalla principal
+  revisar(hoy, alCambiar) {
+    if (hoy.minutos < HORA_SOLTAR_TELEFONO) return;
+    if (this.yaAvisoHoy(hoy.clave)) return;
+    if (this.consultando) return;
+    const casa = Salidas.casa();
+    if (!casa || !navigator.geolocation) return;
+
+    this.consultando = true;
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        this.consultando = false;
+        const lejos = distancia(casa.lat, casa.lon, pos.coords.latitude, pos.coords.longitude);
+        if (lejos <= RADIO_CASA) {
+          Guardado.escribir('avisoNoche', hoy.clave);
+          notificar('Llegaste a casa. Poné el teléfono a cargar y soltalo hasta mañana.');
+          if (alCambiar) alCambiar();
+        }
+        // Si todavía estás afuera no hacemos nada: el próximo tick vuelve a fijarse.
+      },
+      () => { this.consultando = false; },
+      { maximumAge: 120000, timeout: 20000 }
+    );
+  }
+};
