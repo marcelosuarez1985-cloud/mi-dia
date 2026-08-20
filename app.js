@@ -286,3 +286,25 @@ function bloquesDeTrabajo(evsDelDia) {
     .filter(([a, b]) => b - a >= HUECO_MINIMO)
     .map(([a, b]) => ({ desde: hhmm(a), hasta: hhmm(b), minutos: b - a, minIni: a, minFin: b }));
 }
+// ───────── Sugerencia de comida del mediodía ─────────
+// Un día es "largo" cuando la última actividad termina 22:00 o más tarde:
+// ahí la comida del mediodía es lo último sólido hasta pasadas las 22.
+function esDiaLargo(evsDelDia) {
+  return evsDelDia.some(e => !e.todoElDia && e.minFin >= 22 * 60);
+}
+
+function sugerenciaDeComida(ev, evsDelDia) {
+  if (typeof comidaDelDia !== 'function') return null;
+  if (ev.tipo !== 'comida') return null;
+  const s = comidaDelDia(ev.clave, esDiaLargo(evsDelDia));
+  // Reparto del bloque: cocinar, comer, parar
+  const cocinar = ev.minIni;
+  const comer   = ev.minIni + s.principal.minutos;
+  const parar   = comer + 30;
+  return {
+    principal: s.principal,
+    alternativa: s.alternativa,
+    diaLargo: esDiaLargo(evsDelDia),
+    horarios: `${hhmm(cocinar)} cocinar · ${hhmm(comer)} comer · ${hhmm(parar)} parar`
+  };
+}

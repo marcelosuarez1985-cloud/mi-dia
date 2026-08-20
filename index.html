@@ -138,6 +138,23 @@
   .otraSede .titulo { font-size: 15.5px; font-weight: 600; margin-top: 2px; }
   .otraSede .meta { font-size: 13px; color: var(--texto-suave); margin-top: 3px; }
 
+  /* Sugerencia de comida */
+  .comidaSug {
+    margin-top: 9px; padding: 11px 13px; border-radius: 9px;
+    background: #fdf6ee; border: 1px solid #ecdcc6; font-size: 14px; line-height: 1.45;
+  }
+  .comidaSug .quien {
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; margin-bottom: 3px; color: var(--comida);
+  }
+  .comidaSug .plato { font-weight: 600; color: var(--texto); }
+  .comidaSug .datos { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
+  .comidaSug .pasos { font-size: 13px; color: var(--texto-suave); margin-top: 6px; }
+  .comidaSug .otra {
+    font-size: 13px; color: var(--texto-suave); margin-top: 8px;
+    padding-top: 8px; border-top: 1px solid #ecdcc6;
+  }
+
   /* Aviso de soltar el teléfono */
   .noche {
     background: #262420; color: #f4f2ee; border-radius: 16px;
@@ -194,9 +211,10 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=6"></script>
-<script src="app.js?v=6"></script>
-<script src="salidas.js?v=6"></script>
+<script src="programa.js?v=7"></script>
+<script src="comidas.js?v=7"></script>
+<script src="app.js?v=7"></script>
+<script src="salidas.js?v=7"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -398,7 +416,7 @@ function dibujar(sinConexion) {
         const pasada = hoy.minutos > ev.minSalida && !r;
         bloque += `<div class="salida" style="${pasada ? 'opacity:.45' : ''}">🚪 Salís de casa <b>${ev.salida}</b> ${extra}</div>`;
       }
-      bloque += tarjeta(ev, ahora);
+      bloque += tarjeta(ev, ahora, deHoy);
       piezas.push({ orden: ev.todoElDia ? -1 : Math.min(ev.minIni, ev.minSalida), html: bloque });
     }
     piezas.sort((a, b) => a.orden - b.orden);
@@ -456,7 +474,7 @@ function dibujar(sinConexion) {
   document.getElementById('app').innerHTML = html.join('');
 }
 
-function tarjeta(ev, ahora) {
+function tarjeta(ev, ahora, evsDelDia) {
   const pasado = ev.fin <= ahora;
   const enCurso = ev.ini <= ahora && ev.fin > ahora;
   const hora = ev.todoElDia ? 'Todo el día' : `${ev.hhmmIni} – ${ev.hhmmFin}`;
@@ -466,8 +484,25 @@ function tarjeta(ev, ahora) {
     ${ev.lugar ? `<div class="lugar">${esc(ev.lugar)}</div>` : ''}
     ${ev.descripcion ? `<div class="desc">${esc(ev.descripcion)}</div>` : ''}
     ${bloqueClases(ev)}
+    ${bloqueComida(ev, evsDelDia || [])}
   </div>`;
 }
+
+// Qué cocinar hoy al mediodía
+function bloqueComida(ev, evsDelDia) {
+  const s = sugerenciaDeComida(ev, evsDelDia);
+  if (!s) return '';
+  return `<div class="comidaSug">
+    <div class="quien">Hoy cociná${s.diaLargo ? ' · día largo, que rinda' : ''}</div>
+    <div class="plato">${esc(s.principal.nombre)}</div>
+    <div class="datos">~${s.principal.proteina} g de proteína · ${s.principal.minutos} min de cocción</div>
+    <div class="datos">${esc(s.horarios)}</div>
+    <div class="pasos">${esc(s.principal.pasos)}</div>
+    <div class="otra">Si no tenés ganas: <b>${esc(s.alternativa.nombre)}</b>
+      (~${s.alternativa.proteina} g · ${s.alternativa.minutos} min)</div>
+  </div>`;
+}
+
 
 // Qué se da en ese evento: tu clase, o quién la da si no te toca
 function bloqueClases(ev) {
