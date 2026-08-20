@@ -1,9 +1,17 @@
 // Service worker: hace que la app abra sin internet y que se pueda instalar.
-const CACHE = 'mi-dia-v5';
+const CACHE = 'mi-dia-v6';
 const ARCHIVOS = ['./', './index.html', './app.js', './programa.js', './salidas.js', './manifest.json', './icono.svg'];
 
 self.addEventListener('install', ev => {
-  ev.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)).then(() => self.skipWaiting()));
+  // `cache: 'reload'` es clave: sin eso el navegador guarda la copia que ya
+  // tenía en su propia caché y la app se queda con archivos viejos.
+  ev.waitUntil(
+    caches.open(CACHE)
+      .then(c => Promise.all(ARCHIVOS.map(u =>
+        fetch(u, { cache: 'reload' }).then(r => (r && r.ok) ? c.put(u, r) : null).catch(() => null)
+      )))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', ev => {
