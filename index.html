@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f2ee">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mi día">
+<link rel="manifest" href="manifest.json">
+<title>Mi día — Asistente personal</title>
+<style>
+  :root {
+    --fondo: #f4f2ee;
+    --tarjeta: #ffffff;
+    --texto: #262420;
+    --texto-suave: #6b6660;
+    --borde: #e7e2da;
+    --entrenamiento: #3f8f5f;
+    --docencia: #3b5fa0;
+    --reunion: #8a857f;
+    --comida: #b5722c;
+    --familia: #8b5fa8;
+    --otro: #b0aaa2;
+    --alerta: #b5432c;
+    --alerta-bg: #fbe9e3;
+    --urgente: #c2410c;
+  }
+  * { box-sizing: border-box; }
+  html, body { overscroll-behavior-y: contain; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    padding: max(20px, env(safe-area-inset-top)) 16px 60px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .contenedor { max-width: 580px; margin: 0 auto; }
+
+  header { margin-bottom: 18px; }
+  .fecha { font-size: 15px; color: var(--texto-suave); text-transform: capitalize; }
+  h1 { font-size: 27px; margin: 3px 0 0; letter-spacing: -0.3px; }
+
+  h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--texto-suave); margin: 30px 0 10px; font-weight: 600;
+  }
+
+  .destacado {
+    background: var(--tarjeta); border: 1px solid var(--borde);
+    border-radius: 16px; padding: 16px 18px; margin-bottom: 8px;
+  }
+  .destacado .etiqueta { font-size: 12.5px; color: var(--texto-suave); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .destacado .titulo { font-size: 19px; font-weight: 600; line-height: 1.25; }
+  .destacado .detalle { font-size: 14.5px; color: var(--texto-suave); margin-top: 5px; }
+
+  /* Aviso de salida — el que insiste */
+  .aviso {
+    background: var(--urgente); color: #fff;
+    border-radius: 16px; padding: 18px;
+    margin-bottom: 14px; text-align: center;
+    animation: latir 1.6s ease-in-out infinite;
+  }
+  .aviso .grande { font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .aviso .chico { font-size: 14px; opacity: .9; margin-top: 6px; }
+  .aviso.calmo { background: var(--tarjeta); color: var(--texto); border: 2px solid var(--urgente); animation: none; }
+  @keyframes latir { 0%,100% { transform: scale(1); } 50% { transform: scale(1.015); } }
+  @media (prefers-reduced-motion: reduce) { .aviso { animation: none; } }
+
+  .salida {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 14px; color: var(--texto-suave); margin: 13px 0 5px 4px;
+  }
+  .salida b { color: var(--texto); font-variant-numeric: tabular-nums; }
+  .salida .ok { color: var(--entrenamiento); font-weight: 600; }
+  .salida .tarde { color: var(--alerta); font-weight: 600; }
+
+  .evento {
+    background: var(--tarjeta); border: 1px solid var(--borde);
+    border-left: 5px solid var(--otro); border-radius: 12px;
+    padding: 13px 15px; margin-bottom: 9px;
+  }
+  .evento.entrenamiento { border-left-color: var(--entrenamiento); }
+  .evento.docencia      { border-left-color: var(--docencia); }
+  .evento.reunion       { border-left-color: var(--reunion); }
+  .evento.comida        { border-left-color: var(--comida); }
+  .evento.familia       { border-left-color: var(--familia); }
+  .evento.pasado        { opacity: .45; }
+  .evento.enCurso       { box-shadow: 0 0 0 2px rgba(63,143,95,.35); }
+  .evento .hora { font-size: 13px; font-weight: 600; color: var(--texto-suave); font-variant-numeric: tabular-nums; }
+  .evento .titulo { font-size: 17px; font-weight: 600; margin-top: 2px; line-height: 1.3; }
+  .evento .lugar { font-size: 14px; color: var(--texto-suave); margin-top: 3px; }
+  .evento .desc {
+    font-size: 13.5px; color: var(--texto-suave); margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid var(--borde); white-space: pre-wrap; line-height: 1.45;
+  }
+  .badge {
+    display: inline-block; font-size: 11.5px; font-weight: 600;
+    padding: 2px 7px; border-radius: 6px; margin-left: 6px;
+    background: #e9f5ee; color: var(--entrenamiento); vertical-align: middle;
+  }
+
+  .alerta {
+    background: var(--alerta-bg); border: 1px solid #f0cfc4; border-radius: 12px;
+    padding: 12px 15px; margin-bottom: 9px; font-size: 14px;
+    color: var(--alerta); line-height: 1.45;
+  }
+
+  .semana { display: flex; flex-direction: column; gap: 6px; }
+  .diaSemana {
+    background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 10px;
+    padding: 10px 14px; display: flex; align-items: center; gap: 12px; font-size: 14.5px;
+  }
+  .diaSemana .nombre { width: 72px; font-weight: 600; text-transform: capitalize; flex-shrink: 0; }
+  .diaSemana .contenido { color: var(--texto-suave); flex: 1; }
+  .diaSemana.hoy { border-color: #c9c2b8; background: #fffdf8; }
+
+  .estado { text-align: center; color: var(--texto-suave); padding: 40px 10px; font-size: 15px; line-height: 1.6; }
+
+  /* Pantalla de configuración inicial */
+  .setup { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 16px; padding: 22px; }
+  .setup h3 { margin: 0 0 10px; font-size: 19px; }
+  .setup p { font-size: 14.5px; color: var(--texto-suave); line-height: 1.55; margin: 0 0 14px; }
+  .setup input {
+    width: 100%; font: inherit; font-size: 15px; padding: 12px;
+    border: 1px solid var(--borde); border-radius: 10px; margin-bottom: 12px;
+    background: var(--fondo); color: var(--texto);
+  }
+  .boton {
+    font: inherit; font-size: 15px; font-weight: 600;
+    background: var(--texto); color: #fff; border: none; border-radius: 10px;
+    padding: 12px 20px; cursor: pointer; width: 100%;
+  }
+  .boton.secundario { background: var(--tarjeta); color: var(--texto); border: 1px solid var(--borde); font-weight: 500; }
+
+  .ajustes { margin-top: 34px; display: flex; flex-direction: column; gap: 8px; }
+  .ajustes .boton { font-size: 14px; padding: 10px 16px; }
+  .pie { text-align: center; font-size: 12.5px; color: var(--texto-suave); margin-top: 20px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <header>
+    <div class="fecha" id="fecha">&nbsp;</div>
+    <h1 id="encabezado">Tu día</h1>
+  </header>
+
+  <div id="app"><div class="estado">Cargando…</div></div>
+</div>
+
+<script src="app.js"></script>
+<script src="salidas.js"></script>
+<script>
+let EVENTOS = [];
+let CRONOMETRO = null;
+
+// ───────── Arranque ─────────
+function arrancar() {
+  const url = Guardado.leer('urlCalendario', null);
+  if (!url) return mostrarSetup();
+
+  document.getElementById('app').innerHTML = '<div class="estado">Leyendo tu calendario…</div>';
+  fetch(url)
+    .then(r => {
+      if (!r.ok) throw new Error('El servidor respondió ' + r.status);
+      return r.json();
+    })
+    .then(crudos => {
+      EVENTOS = prepararEventos(crudos);
+      Guardado.escribir('ultimaCopia', crudos);
+      dibujar();
+      if (CRONOMETRO) clearInterval(CRONOMETRO);
+      CRONOMETRO = setInterval(dibujar, 30000);   // se refresca solo cada 30 s
+    })
+    .catch(err => {
+      const copia = Guardado.leer('ultimaCopia', null);
+      if (copia) {
+        EVENTOS = prepararEventos(copia);
+        dibujar(true);
+      } else {
+        document.getElementById('app').innerHTML =
+          `<div class="estado">No pude leer el calendario.<br><br>
+           <span style="font-size:13px">${esc(err.message)}</span></div>
+           <div class="ajustes"><button class="boton secundario" onclick="cambiarLink()">Cambiar el link del calendario</button></div>`;
+      }
+    });
+}
+
+// ───────── Pantalla de configuración ─────────
+function mostrarSetup() {
+  document.getElementById('encabezado').textContent = 'Configuración';
+  document.getElementById('app').innerHTML = `
+    <div class="setup">
+      <h3>Conectá tu calendario</h3>
+      <p>Pegá el link de tu Google Calendar (el que termina en <b>/exec</b>).
+         Se guarda solo en este teléfono: no viaja a ningún lado ni queda en el código de la app.</p>
+      <input id="entradaUrl" type="url" inputmode="url" autocomplete="off"
+             placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="boton" onclick="guardarLink()">Guardar y entrar</button>
+      <p id="errorSetup" style="color:var(--alerta); margin:12px 0 0"></p>
+    </div>`;
+}
+
+function guardarLink() {
+  const valor = document.getElementById('entradaUrl').value.trim();
+  const error = document.getElementById('errorSetup');
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(valor)) {
+    error.textContent = 'Ese link no tiene la forma esperada. Tiene que empezar con https://script.google.com/macros/s/ y terminar en /exec';
+    return;
+  }
+  Guardado.escribir('urlCalendario', valor);
+  arrancar();
+}
+
+function cambiarLink() {
+  localStorage.removeItem('marce.urlCalendario');
+  localStorage.removeItem('marce.ultimaCopia');
+  mostrarSetup();
+}
+
+// ───────── Dibujar la pantalla ─────────
+function dibujar(sinConexion) {
+  const ahora = new Date();
+  const hoy = partes(ahora);
+
+  document.getElementById('encabezado').textContent = 'Tu día';
+  document.getElementById('fecha').textContent =
+    `${hoy.diaSemana} ${hoy.dia} de ${NOMBRES_MES[hoy.mes]}`;
+
+  const porDia = {};
+  for (const ev of EVENTOS) (porDia[ev.clave] ||= []).push(ev);
+
+  const html = [];
+
+  if (sinConexion) {
+    html.push(`<div class="alerta">Sin conexión — te muestro la última copia que guardé.</div>`);
+  }
+
+  // ── Aviso de salida (lo que insiste) ──
+  const vigilado = Salidas.vigilar(EVENTOS, hoy, () => dibujar());
+  if (vigilado) {
+    const faltan = vigilado.minSalida - hoy.minutos;
+    Salidas.revisarAvisos(vigilado, hoy.minutos);
+    const tieneGPS = !!Salidas.casa();
+    if (faltan <= AVISO_ANTES) {
+      html.push(`<div class="aviso ${faltan > 0 ? 'calmo' : ''}">
+        <div class="grande">${faltan > 0
+          ? `Andá saliendo — ${duracionTexto(faltan)}`
+          : faltan === 0 ? 'Salí ahora' : `Vas ${duracionTexto(-faltan)} tarde`}</div>
+        <div class="chico">${esc(vigilado.titulo)} · salida prevista ${vigilado.salida}${
+          tieneGPS ? '' : ' · marcá tu casa abajo para que detecte cuándo salís'}</div>
+      </div>`);
+    } else {
+      html.push(`<div class="destacado">
+        <div class="etiqueta">Próxima salida · vigilando</div>
+        <div class="titulo">${vigilado.salida} — ${esc(vigilado.titulo)}</div>
+        <div class="detalle">Faltan ${duracionTexto(faltan)}. Te aviso ${AVISO_ANTES} min antes${
+          tieneGPS ? ' y registro cuándo saliste.' : '.'}</div>
+      </div>`);
+    }
+  }
+
+  // ── Lo próximo ──
+  const proximo = EVENTOS.find(ev => ev.fin > ahora && !ev.todoElDia);
+  if (proximo && (!vigilado || vigilado.id !== proximo.id || proximo.minSalida - hoy.minutos > AVISO_ANTES)) {
+    const enCurso = proximo.ini <= ahora;
+    const esHoy = proximo.clave === hoy.clave;
+    let etiqueta, detalle;
+    if (enCurso) {
+      etiqueta = 'Ahora mismo';
+      detalle = `Termina ${proximo.hhmmFin} · quedan ${duracionTexto(Math.round((proximo.fin - ahora) / 60000))}`;
+    } else {
+      etiqueta = esHoy ? `Lo próximo · en ${duracionTexto(Math.round((proximo.ini - ahora) / 60000))}` : 'Lo próximo · mañana';
+      detalle = `${proximo.hhmmIni}–${proximo.hhmmFin}`;
+    }
+    if (proximo.lugar) detalle += ` · ${proximo.lugar}`;
+    html.push(`<div class="destacado">
+      <div class="etiqueta">${etiqueta}</div>
+      <div class="titulo">${esc(proximo.titulo)}</div>
+      <div class="detalle">${esc(detalle)}</div>
+    </div>`);
+  }
+
+  // ── Hoy ──
+  const deHoy = porDia[hoy.clave] || [];
+  html.push('<h2>Hoy</h2>');
+  if (!deHoy.length) {
+    html.push('<div class="estado" style="padding:24px 10px">Ya no te queda nada por hoy.</div>');
+  } else {
+    for (const a of detectarAlertas(deHoy)) html.push(`<div class="alerta">${esc(a)}</div>`);
+    const registro = Salidas.registro();
+    for (const ev of deHoy) {
+      if (ev.salida) {
+        const r = registro[ev.id];
+        let extra = '';
+        if (r) {
+          const dif = r.diferencia;
+          extra = dif <= 0
+            ? `<span class="ok">saliste ${r.salioA} ✓</span>`
+            : `<span class="tarde">saliste ${r.salioA} (${dif} min tarde)</span>`;
+        }
+        const pasada = hoy.minutos > ev.minSalida && !r;
+        html.push(`<div class="salida" style="${pasada && !r ? 'opacity:.45' : ''}">🚪 Salís de casa <b>${ev.salida}</b> ${extra}</div>`);
+      }
+      html.push(tarjeta(ev, ahora));
+    }
+  }
+
+  // ── Cierre del día ──
+  const cierre = calcularCierre(EVENTOS, hoy, ahora);
+  if (cierre) {
+    html.push('<h2>Cierre del día</h2>');
+    html.push(`<div class="destacado">
+      <div class="etiqueta">Hora tope para cortar</div>
+      <div class="titulo">${cierre.soltar}${cierre.yaPaso ? ' — ya pasó' : ''}</div>
+      <div class="detalle">${esc(cierre.explicacion)}</div>
+    </div>`);
+  }
+
+  // ── Los próximos días ──
+  html.push('<h2>Los próximos días</h2><div class="semana">');
+  for (const clave of Object.keys(porDia).sort()) {
+    const evs = porDia[clave];
+    const p = partes(evs[0].ini);
+    const limpiar = t => t.replace(/^[^\wÁÉÍÓÚáéíóúÑñ]+/, '').split('—')[0].trim();
+    const deTipo = t => evs.filter(e => e.tipo === t);
+    const texto = [];
+    if (deTipo('entrenamiento').length) texto.push('💪 ' + deTipo('entrenamiento').map(e => limpiar(e.titulo)).join(', '));
+    if (deTipo('docencia').length)      texto.push('🎓 ' + deTipo('docencia').map(e => limpiar(e.titulo)).join(', '));
+    if (deTipo('familia').length)       texto.push('👨‍👩‍👧 Familia — no agendar');
+    if (!texto.length) {
+      const otros = evs.filter(e => e.tipo !== 'comida');
+      texto.push(otros.length ? otros.map(e => limpiar(e.titulo)).join(', ') : 'Sin clases ni entrenamiento');
+    }
+    const r = deTipo('reunion').length;
+    if (r) texto.push(`${r} ${r === 1 ? 'reunión' : 'reuniones'}`);
+    html.push(`<div class="diaSemana ${clave === hoy.clave ? 'hoy' : ''}">
+      <div class="nombre">${p.diaSemana.slice(0, 3)} ${p.dia}</div>
+      <div class="contenido">${esc(texto.join(' · '))}</div>
+    </div>`);
+  }
+  html.push('</div>');
+
+  // ── Ajustes ──
+  const casaLista = !!Salidas.casa();
+  const notiLista = ('Notification' in window) && Notification.permission === 'granted';
+  html.push(`<div class="ajustes">
+    <button class="boton secundario" onclick="marcarCasa(this)">
+      ${casaLista ? '📍 Casa marcada — volver a marcar' : '📍 Marcar dónde es mi casa'}</button>
+    <button class="boton secundario" onclick="activarAvisos(this)">
+      ${notiLista ? '🔔 Avisos activados' : '🔔 Activar avisos en este teléfono'}</button>
+    <button class="boton secundario" onclick="arrancar()">↻ Actualizar</button>
+    <button class="boton secundario" onclick="cambiarLink()">Cambiar el link del calendario</button>
+  </div>
+  <div class="pie">Se actualiza sola cada 30 segundos mientras la tengas abierta.</div>`);
+
+  document.getElementById('app').innerHTML = html.join('');
+}
+
+function tarjeta(ev, ahora) {
+  const pasado = ev.fin <= ahora;
+  const enCurso = ev.ini <= ahora && ev.fin > ahora;
+  const hora = ev.todoElDia ? 'Todo el día' : `${ev.hhmmIni} – ${ev.hhmmFin}`;
+  return `<div class="evento ${ev.tipo} ${pasado ? 'pasado' : ''} ${enCurso ? 'enCurso' : ''}">
+    <div class="hora">${hora}${enCurso ? '<span class="badge">ahora</span>' : ''}</div>
+    <div class="titulo">${esc(ev.titulo)}</div>
+    ${ev.lugar ? `<div class="lugar">${esc(ev.lugar)}</div>` : ''}
+    ${ev.descripcion ? `<div class="desc">${esc(ev.descripcion)}</div>` : ''}
+  </div>`;
+}
+
+function marcarCasa(boton) {
+  boton.textContent = '📍 Leyendo tu ubicación…';
+  boton.disabled = true;
+  Salidas.marcarCasa(error => {
+    boton.disabled = false;
+    if (error) { boton.textContent = '⚠️ ' + error; }
+    else { dibujar(); }
+  });
+}
+
+function activarAvisos(boton) {
+  pedirPermisoNotificaciones().then(r => {
+    if (r === 'granted') dibujar();
+    else boton.textContent = '⚠️ Los avisos quedaron bloqueados. Habilitalos en los permisos del sitio.';
+  });
+}
+
+arrancar();
+
+// Instalable y con funcionamiento sin internet (solo sobre https)
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// Al volver a la app después de tenerla en segundo plano, refrescar enseguida
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && EVENTOS.length) dibujar();
+});
+</script>
+</body>
+</html>

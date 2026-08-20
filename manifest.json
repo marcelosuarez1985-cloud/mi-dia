@@ -1,0 +1,19 @@
+{
+  "name": "Mi día — Asistente personal",
+  "short_name": "Mi día",
+  "description": "El día de Marce, con horarios de salida y avisos.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f2ee",
+  "theme_color": "#f4f2ee",
+  "icons": [
+    {
+      "src": "icono.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
