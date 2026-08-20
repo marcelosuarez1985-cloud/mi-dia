@@ -187,8 +187,8 @@ function calcularCierre(eventos, hoy, ahora) {
   const p = partes(prox.ini);
 
   // Techo: por más que la cuenta habilite trasnochar (ej. si mañana arrancás
-  // tarde), nunca recomendamos cortar después de las 23:30.
-  const TOPE_MAXIMO = 23 * 60 + 30;
+  // tarde), nunca recomendamos cortar después de las 23:00.
+  const TOPE_MAXIMO = 23 * 60;
   let soltarReal = ((soltar % 1440) + 1440) % 1440;
   // `soltar` negativo = la hora cae esta noche, que es lo esperable.
   // `soltar` positivo = la cuenta se fue a mañana a la mañana, o sea que
