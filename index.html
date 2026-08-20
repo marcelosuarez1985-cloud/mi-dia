@@ -211,10 +211,10 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=7"></script>
-<script src="comidas.js?v=7"></script>
-<script src="app.js?v=7"></script>
-<script src="salidas.js?v=7"></script>
+<script src="programa.js?v=8"></script>
+<script src="comidas.js?v=8"></script>
+<script src="app.js?v=8"></script>
+<script src="salidas.js?v=8"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -484,22 +484,22 @@ function tarjeta(ev, ahora, evsDelDia) {
     ${ev.lugar ? `<div class="lugar">${esc(ev.lugar)}</div>` : ''}
     ${ev.descripcion ? `<div class="desc">${esc(ev.descripcion)}</div>` : ''}
     ${bloqueClases(ev)}
-    ${bloqueComida(ev, evsDelDia || [])}
+    ${bloqueComida(ev)}
   </div>`;
 }
 
 // Qué cocinar hoy al mediodía
-function bloqueComida(ev, evsDelDia) {
-  const s = sugerenciaDeComida(ev, evsDelDia);
+function bloqueComida(ev) {
+  const s = sugerenciaDeComida(ev);
   if (!s) return '';
+  const p = s.plato;
   return `<div class="comidaSug">
-    <div class="quien">Hoy cociná${s.diaLargo ? ' · día largo, que rinda' : ''}</div>
-    <div class="plato">${esc(s.principal.nombre)}</div>
-    <div class="datos">~${s.principal.proteina} g de proteína · ${s.principal.minutos} min de cocción</div>
+    <div class="quien">Hoy cociná${p.diaLargo ? ' · día largo, que rinda' : ''}</div>
+    <div class="plato">${esc(p.nombre)}</div>
+    <div class="datos">~${p.proteina} g de proteína · ${p.minutos} min de cocción · para 2</div>
     <div class="datos">${esc(s.horarios)}</div>
-    <div class="pasos">${esc(s.principal.pasos)}</div>
-    <div class="otra">Si no tenés ganas: <b>${esc(s.alternativa.nombre)}</b>
-      (~${s.alternativa.proteina} g · ${s.alternativa.minutos} min)</div>
+    <div class="otra">🛒 ${esc(p.ingredientes)}</div>
+    <div class="pasos">${esc(p.pasos)}</div>
   </div>`;
 }
 

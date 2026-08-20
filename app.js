@@ -293,18 +293,15 @@ function esDiaLargo(evsDelDia) {
   return evsDelDia.some(e => !e.todoElDia && e.minFin >= 22 * 60);
 }
 
-function sugerenciaDeComida(ev, evsDelDia) {
+function sugerenciaDeComida(ev) {
   if (typeof comidaDelDia !== 'function') return null;
   if (ev.tipo !== 'comida') return null;
-  const s = comidaDelDia(ev.clave, esDiaLargo(evsDelDia));
+  const plato = comidaDelDia(ev.clave);
+  if (!plato) return null;                 // sábado y domingo no tienen plan fijo
   // Reparto del bloque: cocinar, comer, parar
-  const cocinar = ev.minIni;
-  const comer   = ev.minIni + s.principal.minutos;
-  const parar   = comer + 30;
+  const comer = ev.minIni + plato.minutos;
   return {
-    principal: s.principal,
-    alternativa: s.alternativa,
-    diaLargo: esDiaLargo(evsDelDia),
-    horarios: `${hhmm(cocinar)} cocinar · ${hhmm(comer)} comer · ${hhmm(parar)} parar`
+    plato,
+    horarios: `${hhmm(ev.minIni)} cocinar · ${hhmm(comer)} comer · ${hhmm(comer + 30)} parar`
   };
 }
