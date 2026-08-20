@@ -313,8 +313,8 @@ function dibujar(sinConexion) {
   if (cierre) {
     html.push('<h2>Cierre del día</h2>');
     html.push(`<div class="destacado">
-      <div class="etiqueta">Hora tope para cortar</div>
-      <div class="titulo">${cierre.soltar}${cierre.yaPaso ? ' — ya pasó' : ''}</div>
+      <div class="etiqueta">${cierre.libre ? 'Mañana sin compromisos' : 'Hora tope para cortar'}</div>
+      <div class="titulo">${cierre.libre ? 'Sin hora tope' : cierre.soltar + (cierre.yaPaso ? ' — ya pasó' : '')}</div>
       <div class="detalle">${esc(cierre.explicacion)}</div>
     </div>`);
   }

@@ -80,10 +80,15 @@ function lugarDe(ev, tipo) {
   if (ev.lugar) return ev.lugar;
   const t = ev.titulo.toLowerCase();
   if (/sportclub|flores|musculaci|zumba|nataci/.test(t)) return 'SportClub Flores';
-  if (/p\.c\./.test(t)) return 'Parque Chacabuco';
-  if (/v\.p\./.test(t)) return 'Villa del Parque';
   if (/trote/.test(t)) return 'Salida desde casa';
+  // Las reuniones de consejo (GIGNiT y ECOA.RE) son todas virtuales.
+  // Va antes que las sedes para que un título con un día de la semana no la mande a una sede.
   if (tipo === 'reunion') return 'Virtual';
+  // Sedes de las formaciones
+  if (/p\.c\.|parque chacabuco|s[áa]bado/.test(t)) return 'Parque Chacabuco';
+  if (/v\.p\.|villa del parque|mi[ée]rcoles/.test(t)) return 'Villa del Parque';
+  if (/delfos|recoleta|jueves/.test(t)) return 'Delfos (Recoleta)';
+  if (/flacso/.test(t)) return 'FLACSO';
   return '';
 }
 
@@ -144,25 +149,52 @@ function detectarAlertas(evs) {
 }
 
 // ───────── Cierre del día ─────────
+// Una comida, un bloque de familia o un evento de todo el día NO cuentan como
+// "hora de arranque": si los tomáramos como referencia saldrían horarios absurdos.
+function esCompromisoReal(ev) {
+  return !ev.todoElDia && ev.tipo !== 'comida' && ev.tipo !== 'familia';
+}
+
 function calcularCierre(eventos, hoy, ahora) {
-  const futuros = eventos.filter(e => e.ini > ahora && !e.todoElDia && e.clave !== hoy.clave);
-  if (!futuros.length) return null;
-  const manana = futuros[0];
-  const salidaManana = manana.traslado > 0 ? manana.minIni - manana.traslado : manana.minIni;
-  const levantarse = salidaManana - MIN_PREP_MANANA;
-  const dormido = levantarse - HORAS_DE_SUENO * 60;
-  const soltar = dormido - MINUTOS_PARA_DORMIRSE;
-  const p = partes(manana.ini);
+  // La clave del día de mañana, para saber si el próximo compromiso es mañana
+  const manianaClave = partes(new Date(ahora.getTime() + 24 * 60 * 60 * 1000)).clave;
+
+  const proximos = eventos.filter(e => e.ini > ahora && e.clave !== hoy.clave && esCompromisoReal(e));
+  const prox = proximos[0];
+
+  // Mañana no hay nada fijo: no hay hora tope real que calcular.
+  if (!prox || prox.clave !== manianaClave) {
+    let cola = '';
+    if (prox) {
+      const q = partes(prox.ini);
+      cola = ` Tu próximo compromiso es «${prox.titulo}» el ${q.diaSemana} ${q.dia} a las ${prox.hhmmIni}.`;
+    }
+    return {
+      libre: true,
+      soltar: null,
+      yaPaso: false,
+      explicacion: `Mañana no tenés nada fijo, así que no hay una hora tope que dependa ` +
+        `de a qué hora te levantás.${cola} Igual conviene cortar: un día libre no es motivo ` +
+        `para arrastrar cansancio al resto de la semana.`
+    };
+  }
+
+  const salidaManana = prox.traslado > 0 ? prox.minIni - prox.traslado : prox.minIni;
+  const levantarse   = salidaManana - MIN_PREP_MANANA;
+  const dormido      = levantarse - HORAS_DE_SUENO * 60;
+  const soltar       = dormido - MINUTOS_PARA_DORMIRSE;
+  const p = partes(prox.ini);
 
   let minAhora = hoy.minutos, minSoltar = ((soltar % 1440) + 1440) % 1440;
   if (minSoltar < 6 * 60) minSoltar += 1440;
-  if (minAhora < 6 * 60) minAhora += 1440;
+  if (minAhora  < 6 * 60) minAhora  += 1440;
 
   return {
+    libre: false,
     soltar: hhmm(soltar),
     yaPaso: minAhora > minSoltar,
-    explicacion: `Mañana (${p.diaSemana}) arrancás con «${manana.titulo}» ${manana.hhmmIni}` +
-      (manana.traslado > 0 ? `, salís de casa ${hhmm(salidaManana)}` : '') +
+    explicacion: `Mañana (${p.diaSemana}) arrancás con «${prox.titulo}» ${prox.hhmmIni}` +
+      (prox.traslado > 0 ? `, salís de casa ${hhmm(salidaManana)}` : '') +
       `. Contando ${MIN_PREP_MANANA} min para prepararte y ${HORAS_DE_SUENO} h de sueño, ` +
       `te levantás ${hhmm(levantarse)} y tendrías que estar durmiendo ${hhmm(dormido)}. ` +
       `Es la hora tope, no una recomendación: si cortás antes, mejor.`
