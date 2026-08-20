@@ -186,18 +186,33 @@ function calcularCierre(eventos, hoy, ahora) {
   const soltar       = dormido - MINUTOS_PARA_DORMIRSE;
   const p = partes(prox.ini);
 
-  let minAhora = hoy.minutos, minSoltar = ((soltar % 1440) + 1440) % 1440;
+  // Techo: por más que la cuenta habilite trasnochar (ej. si mañana arrancás
+  // tarde), nunca recomendamos cortar después de las 23:30.
+  const TOPE_MAXIMO = 23 * 60 + 30;
+  let soltarReal = ((soltar % 1440) + 1440) % 1440;
+  // `soltar` negativo = la hora cae esta noche, que es lo esperable.
+  // `soltar` positivo = la cuenta se fue a mañana a la mañana, o sea que
+  // "podrías no dormir". Eso no es un consejo: en ese caso mandamos el tope.
+  const capado = soltar >= 0 || soltarReal > TOPE_MAXIMO;
+  if (capado) soltarReal = TOPE_MAXIMO;
+
+  let minAhora = hoy.minutos, minSoltar = soltarReal;
   if (minSoltar < 6 * 60) minSoltar += 1440;
   if (minAhora  < 6 * 60) minAhora  += 1440;
 
   return {
     libre: false,
-    soltar: hhmm(soltar),
+    capado,
+    soltar: hhmm(soltarReal),
     yaPaso: minAhora > minSoltar,
     explicacion: `Mañana (${p.diaSemana}) arrancás con «${prox.titulo}» ${prox.hhmmIni}` +
       (prox.traslado > 0 ? `, salís de casa ${hhmm(salidaManana)}` : '') +
       `. Contando ${MIN_PREP_MANANA} min para prepararte y ${HORAS_DE_SUENO} h de sueño, ` +
-      `te levantás ${hhmm(levantarse)} y tendrías que estar durmiendo ${hhmm(dormido)}. ` +
+      (capado
+        ? `la cuenta te habilitaría a cortar más tarde, pero trasnochar no se compensa ` +
+          `durmiendo hasta tarde: el tope queda en ${hhmm(TOPE_MAXIMO)}. `
+        : `te levantás ${hhmm(levantarse)} y tendrías que estar durmiendo ${hhmm(dormido)}. `) +
+
       `Es la hora tope, no una recomendación: si cortás antes, mejor.`
   };
 }
