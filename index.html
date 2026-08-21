@@ -209,6 +209,32 @@
   .semanaResumen .cifra { font-size: 13px; color: var(--texto-suave); }
   .semanaResumen .cifra b { display: block; font-size: 21px; color: var(--texto); font-weight: 700; }
 
+  /* Ejercicios de la rutina */
+  .ejercicios { margin-top: 10px; }
+  .ejGrupo {
+    font-size: 11.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+    color: var(--texto-suave); margin: 11px 0 5px;
+  }
+  .ejercicios a {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px; margin-bottom: 5px;
+    background: #f7f5f1; border: 1px solid var(--borde);
+    color: var(--texto); text-decoration: none; font-size: 14px;
+  }
+  .ejercicios a span.play { color: var(--entrenamiento); font-size: 13px; font-weight: 600; flex-shrink: 0; }
+
+  /* Días futuros desplegables */
+  .diaSemana { cursor: pointer; }
+  .diaSemana .flecha { color: var(--texto-suave); font-size: 12px; flex-shrink: 0; }
+  .detalleDia {
+    background: var(--tarjeta); border: 1px solid var(--borde); border-top: none;
+    border-radius: 0 0 10px 10px; padding: 4px 14px 12px; margin: -7px 0 6px;
+    font-size: 13.5px; color: var(--texto-suave);
+  }
+  .detalleDia .linea { display: flex; gap: 10px; padding: 4px 0; }
+  .detalleDia .linea b { color: var(--texto); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .detalleDia .sal { color: var(--alerta); font-size: 12.5px; }
+
   /* Aviso de soltar el teléfono */
   .noche {
     background: #262420; color: #f4f2ee; border-radius: 16px;
@@ -265,11 +291,12 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=12"></script>
-<script src="comidas.js?v=12"></script>
-<script src="app.js?v=12"></script>
-<script src="salidas.js?v=12"></script>
-<script src="planes.js?v=12"></script>
+<script src="programa.js?v=13"></script>
+<script src="comidas.js?v=13"></script>
+<script src="app.js?v=13"></script>
+<script src="salidas.js?v=13"></script>
+<script src="planes.js?v=13"></script>
+<script src="ejercicios.js?v=13"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -520,10 +547,13 @@ function dibujar(sinConexion) {
     }
     const r = deTipo('reunion').length;
     if (r) texto.push(`${r} ${r === 1 ? 'reunión' : 'reuniones'}`);
-    html.push(`<div class="diaSemana ${clave === hoy.clave ? 'hoy' : ''}">
+    const abierto = DIA_ABIERTO === clave;
+    html.push(`<div class="diaSemana ${clave === hoy.clave ? 'hoy' : ''}" onclick="abrirDia('${clave}')">
       <div class="nombre">${p.diaSemana.slice(0, 3)} ${p.dia}</div>
       <div class="contenido">${esc(texto.join(' · '))}</div>
+      <div class="flecha">${abierto ? '▲' : '▼'}</div>
     </div>`);
+    if (abierto) html.push(detalleDelDia(evs, clave));
   }
   html.push('</div>');
 
@@ -555,8 +585,59 @@ function tarjeta(ev, ahora, evsDelDia) {
     ${bloqueClases(ev)}
     ${bloqueComida(ev)}
     ${bloqueCumplimiento(ev, ahora, evsDelDia || [])}
+    ${bloqueEjercicios(ev)}
   </div>`;
 }
+
+// ───────── Días futuros: tocar para ver el detalle ─────────
+let DIA_ABIERTO = null;
+
+function abrirDia(clave) {
+  DIA_ABIERTO = (DIA_ABIERTO === clave) ? null : clave;
+  dibujar();
+}
+
+function detalleDelDia(evs, clave) {
+  const conHora = evs.filter(e => !e.todoElDia).sort((a, b) => a.minIni - b.minIni);
+  if (!conHora.length) return `<div class="detalleDia">Sin nada agendado.</div>`;
+  let h = '<div class="detalleDia">';
+  for (const e of conHora) {
+    const clases = (typeof clasesDelDia === 'function' && SEDE_POR_LUGAR[e.lugar])
+      ? clasesDelDia(clave).filter(c => SEDE_POR_LUGAR[e.lugar].indexOf(c.sedeCod) !== -1)
+      : [];
+    const mio = clases.find(c => c.esMio);
+    h += `<div class="linea"><b>${e.hhmmIni}</b><span>${esc(e.titulo)}${
+      mio ? ' — <b>' + esc(mio.tema) + '</b>' : ''}</span></div>`;
+    if (e.salida) h += `<div class="linea"><b></b><span class="sal">🚪 salís ${e.salida}</span></div>`;
+  }
+  return h + '</div>';
+}
+
+// ───────── Ejercicios de la rutina ─────────
+let EJERCICIOS_ABIERTOS = false;
+
+function bloqueEjercicios(ev) {
+  if (typeof EJERCICIOS === 'undefined') return '';
+  // Sólo en musculación: natación, zumba y trote no usan la rutina de sala.
+  if (!/musculaci/i.test(ev.titulo)) return '';
+
+  if (!EJERCICIOS_ABIERTOS) {
+    return `<div class="cumplio">
+      <button onclick="verEjercicios()">🏋️ Ver los ejercicios</button></div>`;
+  }
+  const grupos = ejerciciosPorGrupo();
+  let h = '<div class="ejercicios">';
+  for (const g of Object.keys(grupos)) {
+    h += `<div class="ejGrupo">${esc(g)}</div>`;
+    for (const e of grupos[g]) {
+      h += `<a href="${esc(videoDe(e.nombre))}" target="_blank" rel="noopener">
+        <span>${esc(e.nombre)}</span><span class="play">▶ ver</span></a>`;
+    }
+  }
+  h += `<div class="cumplio"><button onclick="verEjercicios()">Ocultar</button></div></div>`;
+  return h;
+}
+function verEjercicios() { EJERCICIOS_ABIERTOS = !EJERCICIOS_ABIERTOS; dibujar(); }
 
 // ───────── ¿Lo hiciste? y los planes B/C si no ─────────
 let PLANES_ABIERTOS = null;   // id del entrenamiento cuyos planes están desplegados
