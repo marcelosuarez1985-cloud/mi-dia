@@ -160,6 +160,55 @@
     padding-top: 8px; border-top: 1px solid #ecdcc6;
   }
 
+  /* Planes B y C */
+  .cumplio { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .cumplio button {
+    font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    border-radius: 8px; padding: 7px 13px; border: 1px solid var(--borde);
+    background: var(--tarjeta); color: var(--texto);
+  }
+  .cumplio button.si { border-color: #bcd9c7; color: var(--entrenamiento); }
+  .cumplio button.no { border-color: #e8cec5; color: var(--alerta); }
+
+  .marcado {
+    margin-top: 10px; font-size: 13.5px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .marcado.ok   { color: var(--entrenamiento); }
+  .marcado.alt  { color: var(--comida); }
+  .marcado.perd { color: var(--texto-suave); }
+  .marcado button {
+    font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
+    background: none; border: none; color: var(--texto-suave);
+    text-decoration: underline; padding: 0;
+  }
+
+  .planes { margin-top: 10px; }
+  .plan {
+    display: flex; gap: 11px; align-items: flex-start;
+    padding: 11px 12px; border-radius: 9px; margin-bottom: 7px;
+    background: #f7f5f1; border: 1px solid var(--borde);
+    cursor: pointer; text-align: left; width: 100%; font: inherit;
+  }
+  .plan:hover { border-color: #c9c2b6; }
+  .plan .letra {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--texto); color: #fff; font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .plan .que { font-weight: 600; font-size: 14.5px; color: var(--texto); }
+  .plan .cuando { font-size: 13px; color: var(--texto); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .plan .porque { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; line-height: 1.4; }
+
+  /* Resumen de la semana */
+  .semanaResumen {
+    background: var(--tarjeta); border: 1px solid var(--borde);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 9px;
+  }
+  .semanaResumen .cifras { display: flex; gap: 18px; margin-top: 8px; flex-wrap: wrap; }
+  .semanaResumen .cifra { font-size: 13px; color: var(--texto-suave); }
+  .semanaResumen .cifra b { display: block; font-size: 21px; color: var(--texto); font-weight: 700; }
+
   /* Aviso de soltar el teléfono */
   .noche {
     background: #262420; color: #f4f2ee; border-radius: 16px;
@@ -216,10 +265,11 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=10"></script>
-<script src="comidas.js?v=10"></script>
-<script src="app.js?v=10"></script>
-<script src="salidas.js?v=10"></script>
+<script src="programa.js?v=11"></script>
+<script src="comidas.js?v=11"></script>
+<script src="app.js?v=11"></script>
+<script src="salidas.js?v=11"></script>
+<script src="planes.js?v=11"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -439,6 +489,20 @@ function dibujar(sinConexion) {
     </div>`);
   }
 
+  // ── Cómo venís con el entrenamiento ──
+  const res = resumenSemana(EVENTOS, hoy);
+  if (res.total > 0) {
+    html.push('<h2>Tu semana de entrenamiento</h2>');
+    html.push(`<div class="semanaResumen">
+      <div class="cifras">
+        <div class="cifra"><b>${res.hechos}</b>cumplidos</div>
+        <div class="cifra"><b>${res.reemplazados}</b>reemplazados</div>
+        <div class="cifra"><b>${res.perdidos}</b>perdidos</div>
+        <div class="cifra"><b>${res.sinMarcar}</b>sin marcar</div>
+      </div>
+    </div>`);
+  }
+
   // ── Los próximos días ──
   html.push('<h2>Los próximos días</h2><div class="semana">');
   for (const clave of Object.keys(porDia).sort()) {
@@ -490,7 +554,73 @@ function tarjeta(ev, ahora, evsDelDia) {
     ${ev.descripcion ? `<div class="desc">${esc(ev.descripcion)}</div>` : ''}
     ${bloqueClases(ev)}
     ${bloqueComida(ev)}
+    ${bloqueCumplimiento(ev, ahora, evsDelDia || [])}
   </div>`;
+}
+
+// ───────── ¿Lo hiciste? y los planes B/C si no ─────────
+let PLANES_ABIERTOS = null;   // id del entrenamiento cuyos planes están desplegados
+
+function bloqueCumplimiento(ev, ahora, evsDelDia) {
+  if (ev.tipo !== 'entrenamiento') return '';
+  const hoy = partes(ahora);
+  if (ev.clave !== hoy.clave) return '';
+  if (ev.ini > ahora) return '';                 // todavía no empezó
+
+  const r = estadoEntrenamiento(ev);
+  if (r) {
+    const clase = r.estado === 'hecho' ? 'ok' : (r.estado === 'reemplazado' ? 'alt' : 'perd');
+    const texto = r.estado === 'hecho' ? '✓ Lo hiciste'
+                : r.estado === 'reemplazado' ? '↔ Reemplazado por ' + esc(r.detalle)
+                : '— Quedó sin hacer';
+    return `<div class="marcado ${clase}">${texto}
+      <button onclick="desmarcar('${esc(ev.id)}')">cambiar</button></div>`;
+  }
+
+  if (PLANES_ABIERTOS === ev.id) {
+    const planes = planesPara(ev, evsDelDia, hoy);
+    return `<div class="planes">` + planes.map((p, i) => `
+      <button class="plan" onclick="elegirPlan('${esc(ev.id)}', ${i})">
+        <div class="letra">${p.letra}</div>
+        <div>
+          <div class="que">${esc(p.que)}</div>
+          <div class="cuando">${esc(p.cuando)}</div>
+          <div class="porque">${esc(p.porque)}</div>
+        </div>
+      </button>`).join('') + `</div>`;
+  }
+
+  return `<div class="cumplio">
+    <button class="si" onclick="marcarHecho('${esc(ev.id)}')">✓ Lo hice</button>
+    <button class="no" onclick="abrirPlanes('${esc(ev.id)}')">No llegué — ¿qué hago?</button>
+  </div>`;
+}
+
+function buscarEvento(id) { return EVENTOS.find(e => e.id === id); }
+
+function marcarHecho(id) {
+  const ev = buscarEvento(id);
+  if (ev) { marcarEntrenamiento(ev, 'hecho'); PLANES_ABIERTOS = null; dibujar(); }
+}
+function abrirPlanes(id) { PLANES_ABIERTOS = id; dibujar(); }
+function desmarcar(id) {
+  const reg = registroEntrenamientos();
+  delete reg[id];
+  Guardado.escribir('cumplimiento', reg);
+  PLANES_ABIERTOS = null;
+  dibujar();
+}
+function elegirPlan(id, i) {
+  const ev = buscarEvento(id);
+  if (!ev) return;
+  const hoy = partes(new Date());
+  const delDia = EVENTOS.filter(e => e.clave === hoy.clave);
+  const p = planesPara(ev, delDia, hoy)[i];
+  if (!p) return;
+  if (/anotarlo como no cumplido/i.test(p.que)) marcarEntrenamiento(ev, 'no');
+  else marcarEntrenamiento(ev, 'reemplazado', p.que + ' (' + p.cuando + ')');
+  PLANES_ABIERTOS = null;
+  dibujar();
 }
 
 // Qué cocinar hoy al mediodía
