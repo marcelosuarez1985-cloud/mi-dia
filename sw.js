@@ -1,5 +1,5 @@
 // Service worker: hace que la app abra sin internet y que se pueda instalar.
-const CACHE = 'mi-dia-v11';
+const CACHE = 'mi-dia-v12';
 const ARCHIVOS = ['./', './index.html', './app.js', './programa.js', './comidas.js', './salidas.js', './planes.js', './manifest.json', './icono.svg'];
 
 self.addEventListener('install', ev => {

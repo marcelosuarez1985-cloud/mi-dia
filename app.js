@@ -271,10 +271,12 @@ function bloquesDeTrabajo(evsDelDia) {
   // el calendario manda y así no aparecen duplicados.
   if (evsDelDia.some(e => e.tipo === 'trabajo')) return [];
 
-  // Un evento ocupa desde que salís de casa hasta que termina.
+  // Un evento ocupa desde que salís de casa hasta que volvés.
+  // La vuelta importa: el sábado terminás en Parque Chacabuco a las 12:00 y
+  // esa hora siguiente es el viaje, no tiempo libre.
   const ocupado = evsDelDia
     .filter(e => !e.todoElDia)
-    .map(e => [Math.min(e.minIni, e.minSalida), e.minFin])
+    .map(e => [Math.min(e.minIni, e.minSalida), e.minFin + e.traslado])
     .sort((a, b) => a[0] - b[0]);
 
   const libres = [];
