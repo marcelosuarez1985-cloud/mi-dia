@@ -87,6 +87,11 @@
   .evento.reunion       { border-left-color: var(--reunion); }
   .evento.comida        { border-left-color: var(--comida); }
   .evento.familia       { border-left-color: var(--familia); }
+  /* Los bloques de trabajo vienen del calendario pero se ven distintos:
+     no son un compromiso con otro, son tiempo tuyo reservado. */
+  .evento.trabajo {
+    background: transparent; border: 1px dashed #c9c2b6; border-left: 1px dashed #c9c2b6;
+  }
   .evento.pasado        { opacity: .45; }
   .evento.enCurso       { box-shadow: 0 0 0 2px rgba(63,143,95,.35); }
   .evento .hora { font-size: 13px; font-weight: 600; color: var(--texto-suave); font-variant-numeric: tabular-nums; }
@@ -211,10 +216,10 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=9"></script>
-<script src="comidas.js?v=9"></script>
-<script src="app.js?v=9"></script>
-<script src="salidas.js?v=9"></script>
+<script src="programa.js?v=10"></script>
+<script src="comidas.js?v=10"></script>
+<script src="app.js?v=10"></script>
+<script src="salidas.js?v=10"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;

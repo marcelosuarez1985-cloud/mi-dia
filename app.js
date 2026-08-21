@@ -56,6 +56,7 @@ function clasificar(titulo) {
   if (/musculaci|zumba|nataci|trote|gimnasio|cardio|yoga|stretching|cycle|movilidad|caminata|elongaci|bici|cinta/.test(t)) return 'entrenamiento';
   if (/comida|pausa|almuerzo|cena/.test(t)) return 'comida';
   if (/familia/.test(t)) return 'familia';
+  if (/\btrabajo\b/.test(t)) return 'trabajo';
   if (/consejo|reuni|directorio/.test(t)) return 'reunion';
   if (/ecoa\.re|flacso|delfos|clínic|clinic|postítulo|postitulo|formaci|clase/.test(t)) return 'docencia';
   return 'otro';
@@ -153,7 +154,8 @@ function detectarAlertas(evs) {
 // Una comida, un bloque de familia o un evento de todo el día NO cuentan como
 // "hora de arranque": si los tomáramos como referencia saldrían horarios absurdos.
 function esCompromisoReal(ev) {
-  return !ev.todoElDia && ev.tipo !== 'comida' && ev.tipo !== 'familia';
+  return !ev.todoElDia && ev.tipo !== 'comida' && ev.tipo !== 'familia'
+      && ev.tipo !== 'trabajo';   // un bloque de trabajo en casa no fija la hora de levantarse
 }
 
 function calcularCierre(eventos, hoy, ahora) {
@@ -265,6 +267,9 @@ const HUECO_MINIMO   = 60;        // menos de una hora no da para sentarse a tra
 function bloquesDeTrabajo(evsDelDia) {
   // Los domingos son de familia: no se agenda nada.
   if (evsDelDia.some(e => e.tipo === 'familia')) return [];
+  // Si los bloques ya están cargados en el calendario, no los volvemos a calcular:
+  // el calendario manda y así no aparecen duplicados.
+  if (evsDelDia.some(e => e.tipo === 'trabajo')) return [];
 
   // Un evento ocupa desde que salís de casa hasta que termina.
   const ocupado = evsDelDia
