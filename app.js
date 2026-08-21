@@ -212,7 +212,6 @@ function calcularCierre(eventos, hoy, ahora) {
         ? `la cuenta te habilitaría a cortar más tarde, pero trasnochar no se compensa ` +
           `durmiendo hasta tarde: el tope queda en ${hhmm(TOPE_MAXIMO)}. `
         : `te levantás ${hhmm(levantarse)} y tendrías que estar durmiendo ${hhmm(dormido)}. `) +
-
       `Es la hora tope, no una recomendación: si cortás antes, mejor.`
   };
 }
@@ -286,6 +285,7 @@ function bloquesDeTrabajo(evsDelDia) {
     .filter(([a, b]) => b - a >= HUECO_MINIMO)
     .map(([a, b]) => ({ desde: hhmm(a), hasta: hhmm(b), minutos: b - a, minIni: a, minFin: b }));
 }
+
 // ───────── Sugerencia de comida del mediodía ─────────
 // Un día es "largo" cuando la última actividad termina 22:00 o más tarde:
 // ahí la comida del mediodía es lo último sólido hasta pasadas las 22.

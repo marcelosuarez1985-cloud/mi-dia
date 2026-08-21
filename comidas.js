@@ -22,10 +22,10 @@
 // 1 = lunes ... 5 = viernes. proteina = gramos por porción.
 const PLAN_SEMANAL = {
   1: {
-    nombre: 'Wok de pollo con verduras y salsa de soja',
-    proteina: 40, minutos: 20, diaLargo: false,
-    ingredientes: '400 g de pechuga · 1 morrón rojo · 1 zucchini · 1 cebolla · salsa de soja',
-    pasos: 'Pollo en tiras a fuego fuerte 6 min. Sumás morrón, zucchini y cebolla, 5 min más. Soja al final.'
+    nombre: 'Wrap de pollo con palta y verduras',
+    proteina: 35, minutos: 12, diaLargo: false,
+    ingredientes: '4 rapiditas · 400 g de pechuga · 1 palta · lechuga · 1 tomate',
+    pasos: 'Pollo en tiras a la plancha 8 min. Calentás las rapiditas 30 seg de cada lado y armás con palta, lechuga y tomate.'
   },
   2: {
     nombre: 'Merluza al horno con limón y brócoli',
