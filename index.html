@@ -323,13 +323,13 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=15"></script>
-<script src="comidas.js?v=15"></script>
-<script src="app.js?v=15"></script>
-<script src="salidas.js?v=15"></script>
-<script src="planes.js?v=15"></script>
-<script src="ejercicios.js?v=15"></script>
-<script src="reuniones.js?v=15"></script>
+<script src="programa.js?v=16"></script>
+<script src="comidas.js?v=16"></script>
+<script src="app.js?v=16"></script>
+<script src="salidas.js?v=16"></script>
+<script src="planes.js?v=16"></script>
+<script src="ejercicios.js?v=16"></script>
+<script src="reuniones.js?v=16"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -626,8 +626,11 @@ function tarjeta(ev, ahora, evsDelDia) {
 }
 
 // ───────── Temas de reunión ─────────
-let REUNIONES_ABIERTO = false;
-function verReuniones() { REUNIONES_ABIERTO = !REUNIONES_ABIERTO; dibujar(); }
+let REUNION_ABIERTA = null;   // nombre de la reunión desplegada, o null
+function verReuniones(nombre) {
+  REUNION_ABIERTA = (REUNION_ABIERTA === nombre) ? null : nombre;
+  dibujar();
+}
 
 function plazoTexto(dias) {
   if (dias === null) return '';
@@ -649,31 +652,35 @@ function tarjetaTema(t, clase) {
 
 function bloqueReuniones(hoy) {
   if (typeof TEMAS === 'undefined') return '';
-  const g = temasPorUrgencia(hoy.clave);
-  const r = resumenReuniones(hoy.clave);
-  const partes = [];
-  if (r.vencidos) partes.push(`<b>${r.vencidos} vencidos</b>`);
-  if (r.porVencer) partes.push(`${r.porVencer} por vencer`);
-  if (r.faltaCompletar) partes.push(`${r.faltaCompletar} incompletos`);
+  let h = '<h2>Temas de reunión</h2>';
 
-  let h = `<h2>Temas de reunión</h2>
-    <div class="reuCabecera ${r.vencidos ? 'hayVencidos' : ''}" onclick="verReuniones()">
-      <div class="titulo">📋 ECOA.RE Directorio</div>
+  for (const nombre of REUNIONES) {
+    const r = resumenReuniones(hoy.clave, nombre);
+    const abierta = REUNION_ABIERTA === nombre;
+    const partes = [];
+    if (r.vencidos) partes.push(`<b>${r.vencidos} vencidos</b>`);
+    if (r.porVencer) partes.push(`${r.porVencer} por vencer`);
+    if (r.faltaCompletar) partes.push(`${r.faltaCompletar} incompletos`);
+
+    h += `<div class="reuCabecera ${r.vencidos ? 'hayVencidos' : ''}"
+            onclick="verReuniones('${esc(nombre)}')">
+      <div class="titulo">📋 ${esc(nombre)}</div>
       <div class="cuenta">${partes.join(' · ') || 'todo al día'}</div>
-      <div class="flecha">${REUNIONES_ABIERTO ? '▲' : '▼'}</div>
+      <div class="flecha">${abierta ? '▲' : '▼'}</div>
     </div>`;
-  if (!REUNIONES_ABIERTO) return h;
 
-  const seccion = (titulo, lista, clase) => lista.length
-    ? `<div class="reuGrupo">${titulo} (${lista.length})</div>` + lista.map(t => tarjetaTema(t, clase)).join('')
-    : '';
-
-  h += seccion('🔴 Vencidos', g.vencidos, 'vencido');
-  h += seccion('🟠 Por vencer esta semana', g.porVencer, 'pronto');
-  h += seccion('⚠️ Falta completar', g.faltaCompletar, 'falta');
-  h += seccion('▶️ En marcha', g.enMarcha, '');
-  h += seccion('✅ Cerrados esta semana', g.cerrados, 'cerrado');
-  h += `<div class="pie">Leído del libro de actas de Canva · ${esc(REUNIONES_ACTUALIZADO)}</div>`;
+    if (!abierta) continue;
+    const g = temasPorUrgencia(hoy.clave, nombre);
+    const seccion = (titulo, lista, clase) => lista.length
+      ? `<div class="reuGrupo">${titulo} (${lista.length})</div>` + lista.map(t => tarjetaTema(t, clase)).join('')
+      : '';
+    h += seccion('🔴 Vencidos', g.vencidos, 'vencido');
+    h += seccion('🟠 Por vencer esta semana', g.porVencer, 'pronto');
+    h += seccion('⚠️ Falta completar', g.faltaCompletar, 'falta');
+    h += seccion('▶️ En marcha', g.enMarcha, '');
+    h += seccion('✅ Cerrados esta semana', g.cerrados, 'cerrado');
+  }
+  h += `<div class="pie">Leído de los libros de actas de Canva · ${esc(REUNIONES_ACTUALIZADO)}</div>`;
   return h;
 }
 
