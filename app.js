@@ -158,6 +158,22 @@ function esCompromisoReal(ev) {
       && ev.tipo !== 'trabajo';   // un bloque de trabajo en casa no fija la hora de levantarse
 }
 
+// A qué hora terminás hoy. Un bloque de trabajo cuenta: si el día se te va
+// hasta las 19, terminaste a las 19.
+function finDelDia(eventos, hoy) {
+  const deHoy = eventos.filter(e => e.clave === hoy.clave && !e.todoElDia && e.tipo !== 'comida');
+  if (!deHoy.length) return null;
+  return Math.max(...deHoy.map(e => e.minFin));
+}
+
+// Nunca sugerimos soltar el teléfono antes de esta hora: si el día terminó
+// a las 10:30, decirte "cortá 11:30" no tiene ningún sentido.
+const PISO_SOLTAR = 19 * 60;
+
+function horaDeSoltar(fin, tope) {
+  return Math.min(Math.max(fin + 60, PISO_SOLTAR), tope);
+}
+
 function calcularCierre(eventos, hoy, ahora) {
   // La clave del día de mañana, para saber si el próximo compromiso es mañana
   const manianaClave = partes(new Date(ahora.getTime() + 24 * 60 * 60 * 1000)).clave;
@@ -172,13 +188,17 @@ function calcularCierre(eventos, hoy, ahora) {
       const q = partes(prox.ini);
       cola = ` Tu próximo compromiso es «${prox.titulo}» el ${q.diaSemana} ${q.dia} a las ${prox.hhmmIni}.`;
     }
+    // Aunque mañana esté libre, hoy terminás a una hora: una después, cortá.
+    const finLibre = finDelDia(eventos, hoy);
+    const soltarLibre = finLibre === null ? null : horaDeSoltar(finLibre, 23 * 60);
     return {
-      libre: true,
-      soltar: null,
-      yaPaso: false,
-      explicacion: `Mañana no tenés nada fijo, así que no hay una hora tope que dependa ` +
-        `de a qué hora te levantás.${cola} Igual conviene cortar: un día libre no es motivo ` +
-        `para arrastrar cansancio al resto de la semana.`
+      libre: soltarLibre === null,
+      soltar: soltarLibre === null ? null : hhmm(soltarLibre),
+      yaPaso: soltarLibre !== null && hoy.minutos > soltarLibre,
+      explicacion: soltarLibre === null
+        ? `Mañana no tenés nada fijo y hoy tampoco tenías nada agendado.${cola}`
+        : `Hoy terminás ${hhmm(finLibre)}. Mañana no tenés nada fijo, así que la hora no ` +
+          `depende de a qué hora te levantás: cortá una hora después de terminar.${cola}`
     };
   }
 
@@ -195,8 +215,18 @@ function calcularCierre(eventos, hoy, ahora) {
   // `soltar` negativo = la hora cae esta noche, que es lo esperable.
   // `soltar` positivo = la cuenta se fue a mañana a la mañana, o sea que
   // "podrías no dormir". Eso no es un consejo: en ese caso mandamos el tope.
-  const capado = soltar >= 0 || soltarReal > TOPE_MAXIMO;
+  let capado = soltar >= 0 || soltarReal > TOPE_MAXIMO;
   if (capado) soltarReal = TOPE_MAXIMO;
+
+  // Regla de Marce: el día que termina temprano, se suelta temprano.
+  // Una hora después de terminar la última actividad, y nunca más tarde que
+  // lo que ya calculamos. Termina 21:00 → 22:00. Termina 19:00 → 20:00.
+  const fin = finDelDia(eventos, hoy);
+  let porFinDelDia = false;
+  if (fin !== null) {
+    const trasTerminar = horaDeSoltar(fin, TOPE_MAXIMO);
+    if (trasTerminar < soltarReal) { soltarReal = trasTerminar; porFinDelDia = true; capado = false; }
+  }
 
   let minAhora = hoy.minutos, minSoltar = soltarReal;
   if (minSoltar < 6 * 60) minSoltar += 1440;
@@ -210,7 +240,9 @@ function calcularCierre(eventos, hoy, ahora) {
     explicacion: `Mañana (${p.diaSemana}) arrancás con «${prox.titulo}» ${prox.hhmmIni}` +
       (prox.traslado > 0 ? `, salís de casa ${hhmm(salidaManana)}` : '') +
       `. Contando ${MIN_PREP_MANANA} min para prepararte y ${HORAS_DE_SUENO} h de sueño, ` +
-      (capado
+      (porFinDelDia
+        ? `hoy terminás ${hhmm(fin)}, así que cortá una hora después y aprovechá el día corto. `
+        : capado
         ? `la cuenta te habilitaría a cortar más tarde, pero trasnochar no se compensa ` +
           `durmiendo hasta tarde: el tope queda en ${hhmm(TOPE_MAXIMO)}. `
         : `te levantás ${hhmm(levantarse)} y tendrías que estar durmiendo ${hhmm(dormido)}. `) +
