@@ -56,3 +56,21 @@ en `sw.js` (`mi-dia-v9` → `mi-dia-v10`), o los teléfonos siguen con la copia 
 - Temas de las reuniones.
 - Videos de los ejercicios de la rutina.
 - Desayunos y cenas: hoy sólo está planificado el almuerzo.
+
+## Los temas de reunión se actualizan solos
+
+Todos los días a las 7:05 de la mañana, la computadora:
+
+1. baja los dos libros de actas de Canva (la página 2 de cada tablero),
+2. arma de nuevo la lista de temas,
+3. y publica la app **sólo si algo cambió**.
+
+Vos no tenés que hacer nada. El equipo sigue cargando los temas en Canva
+como siempre.
+
+Si querés forzarlo a mano en algún momento:
+
+    sh herramientas/actualizar-reuniones.sh "ECOA.RE Directorio=ruta/a.csv" "GIGNiT=ruta/b.csv"
+
+Una aclaración: esto corre mientras la aplicación de Claude esté abierta.
+Si la computadora estuvo apagada, se pone al día la próxima vez que la abras.
