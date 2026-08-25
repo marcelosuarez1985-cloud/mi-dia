@@ -235,6 +235,38 @@
   .detalleDia .linea b { color: var(--texto); font-variant-numeric: tabular-nums; flex-shrink: 0; }
   .detalleDia .sal { color: var(--alerta); font-size: 12.5px; }
 
+  /* Temas de reunión */
+  .reuCabecera {
+    background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px;
+    padding: 13px 15px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer; font-size: 15px;
+  }
+  .reuCabecera.hayVencidos { border-color: #e8bfb2; background: #fdf4f1; }
+  .reuCabecera .titulo { font-weight: 600; flex: 1; }
+  .reuCabecera .cuenta { font-size: 13px; color: var(--texto-suave); }
+  .reuCabecera .cuenta b { color: var(--alerta); }
+
+  .reuGrupo {
+    font-size: 11.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+    color: var(--texto-suave); margin: 16px 0 6px;
+  }
+  .tema {
+    background: var(--tarjeta); border: 1px solid var(--borde);
+    border-left: 4px solid var(--otro); border-radius: 10px;
+    padding: 11px 13px; margin-bottom: 6px; font-size: 14px; line-height: 1.4;
+  }
+  .tema.vencido { border-left-color: var(--alerta); }
+  .tema.pronto  { border-left-color: var(--comida); }
+  .tema.falta   { border-left-color: #b0aaa2; border-style: dashed; }
+  .tema.cerrado { opacity: .55; }
+  .tema .nombre { font-weight: 600; color: var(--texto); }
+  .tema .meta { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
+  .tema .plazo { font-weight: 600; }
+  .tema .plazo.rojo { color: var(--alerta); }
+  .tema .plazo.naranja { color: var(--comida); }
+  .tema .falta1 { font-size: 12.5px; color: var(--alerta); margin-top: 3px; }
+  .tema .detalle { font-size: 12.5px; color: var(--texto-suave); margin-top: 5px; }
+
   /* Aviso de soltar el teléfono */
   .noche {
     background: #262420; color: #f4f2ee; border-radius: 16px;
@@ -291,12 +323,13 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=14"></script>
-<script src="comidas.js?v=14"></script>
-<script src="app.js?v=14"></script>
-<script src="salidas.js?v=14"></script>
-<script src="planes.js?v=14"></script>
-<script src="ejercicios.js?v=14"></script>
+<script src="programa.js?v=15"></script>
+<script src="comidas.js?v=15"></script>
+<script src="app.js?v=15"></script>
+<script src="salidas.js?v=15"></script>
+<script src="planes.js?v=15"></script>
+<script src="ejercicios.js?v=15"></script>
+<script src="reuniones.js?v=15"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -530,6 +563,9 @@ function dibujar(sinConexion) {
     </div>`);
   }
 
+  // ── Temas de reunión ──
+  html.push(bloqueReuniones(hoy));
+
   // ── Los próximos días ──
   html.push('<h2>Los próximos días</h2><div class="semana">');
   for (const clave of Object.keys(porDia).sort()) {
@@ -587,6 +623,58 @@ function tarjeta(ev, ahora, evsDelDia) {
     ${bloqueCumplimiento(ev, ahora, evsDelDia || [])}
     ${bloqueEjercicios(ev)}
   </div>`;
+}
+
+// ───────── Temas de reunión ─────────
+let REUNIONES_ABIERTO = false;
+function verReuniones() { REUNIONES_ABIERTO = !REUNIONES_ABIERTO; dibujar(); }
+
+function plazoTexto(dias) {
+  if (dias === null) return '';
+  if (dias < 0)  return `<span class="plazo rojo">venció hace ${-dias} ${-dias === 1 ? 'día' : 'días'}</span>`;
+  if (dias === 0) return `<span class="plazo rojo">vence hoy</span>`;
+  if (dias <= 7) return `<span class="plazo naranja">vence en ${dias} ${dias === 1 ? 'día' : 'días'}</span>`;
+  return `vence en ${dias} días`;
+}
+
+function tarjetaTema(t, clase) {
+  return `<div class="tema ${clase}">
+    <div class="nombre">${esc(t.estado || '⬜')} ${esc(t.tema)}</div>
+    <div class="meta">${esc(t.responsable || 'sin responsable')}${
+      t.vence ? ' · ' + plazoTexto(t.dias) : ''}</div>
+    ${t.faltas ? `<div class="falta1">⚠️ ${esc(t.faltas.join(' · '))}</div>` : ''}
+    ${t.tarea ? `<div class="detalle">${esc(t.tarea)}</div>` : ''}
+  </div>`;
+}
+
+function bloqueReuniones(hoy) {
+  if (typeof TEMAS === 'undefined') return '';
+  const g = temasPorUrgencia(hoy.clave);
+  const r = resumenReuniones(hoy.clave);
+  const partes = [];
+  if (r.vencidos) partes.push(`<b>${r.vencidos} vencidos</b>`);
+  if (r.porVencer) partes.push(`${r.porVencer} por vencer`);
+  if (r.faltaCompletar) partes.push(`${r.faltaCompletar} incompletos`);
+
+  let h = `<h2>Temas de reunión</h2>
+    <div class="reuCabecera ${r.vencidos ? 'hayVencidos' : ''}" onclick="verReuniones()">
+      <div class="titulo">📋 ECOA.RE Directorio</div>
+      <div class="cuenta">${partes.join(' · ') || 'todo al día'}</div>
+      <div class="flecha">${REUNIONES_ABIERTO ? '▲' : '▼'}</div>
+    </div>`;
+  if (!REUNIONES_ABIERTO) return h;
+
+  const seccion = (titulo, lista, clase) => lista.length
+    ? `<div class="reuGrupo">${titulo} (${lista.length})</div>` + lista.map(t => tarjetaTema(t, clase)).join('')
+    : '';
+
+  h += seccion('🔴 Vencidos', g.vencidos, 'vencido');
+  h += seccion('🟠 Por vencer esta semana', g.porVencer, 'pronto');
+  h += seccion('⚠️ Falta completar', g.faltaCompletar, 'falta');
+  h += seccion('▶️ En marcha', g.enMarcha, '');
+  h += seccion('✅ Cerrados esta semana', g.cerrados, 'cerrado');
+  h += `<div class="pie">Leído del libro de actas de Canva · ${esc(REUNIONES_ACTUALIZADO)}</div>`;
+  return h;
 }
 
 // ───────── Días futuros: tocar para ver el detalle ─────────
