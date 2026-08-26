@@ -1,7 +1,14 @@
 // ═══════════════════════════════════════════════════════════
 //  Programa de clases 2026 — Escuela de Coaching Ontológico
 //  Fuente: planilla "Coordinacion_Staff_Delfos_Flacso_2026"
-//  Cada fila: [fecha, sede, unidad-clase, tema, responsable]
+//  Cada fila: [fecha, sede, unidad-clase, tema, responsable, "ok"]
+//
+//  El 6to campo sólo aparece cuando Marce confirmó el responsable a mano.
+//  Hace falta porque el Canva de Delfos usa UNA sola casilla de responsable
+//  para las tres sedes de 1er año (Villa del Parque miércoles, Delfos jueves
+//  y Parque Chacabuco sábado), y en la realidad no siempre es el mismo.
+//  Sin el "ok", el nombre que se muestra en VP y PC es el de Delfos: un
+//  supuesto, no un dato. La app lo marca como sin confirmar.
 //
 //  Sedes:  D1 = Delfos (Recoleta) 1er año   jueves 19:00–22:00
 //          D2 = Delfos (Recoleta) 2do año   jueves 19:00–22:00
@@ -25,11 +32,11 @@ const PROGRAMA = [
 ["2026-08-20","D2","U6-2","Cond. Certificación / Fase 3 / Sunesis (3) / C.O. F2","MARCE"],
 ["2026-08-20","FL","U1-2","Qué es y qué hace un Coach / El Circo de las Mariposas","MAIK"],
 ["2026-08-22","PC","U6-2","Gestión emocional I (1)(2)","FER"],
-["2026-08-26","VP","U6-3","Ontología: Juicios I (1)(2)","FER"],
+["2026-08-26","VP","U6-3","Ontología: Juicios I (1)(2)","ALE","ok"],
 ["2026-08-27","D1","U6-3","Ontología: Juicios I (1)(2)","FER"],
 ["2026-08-27","D2","U6-3","Coaching Etapa 4 DESCUBRIMIENTO / C.O. F2","MARCE"],
 ["2026-08-27","FL","U1-3","Ontología: Raíces del pensamiento occidental / Mi manera de ser","ALE"],
-["2026-08-29","PC","U6-3","Ontología: Juicios I (1)(2)","FER"],
+["2026-08-29","PC","U6-3","Ontología: Juicios I (1)(2)","ALE","ok"],
 ["2026-09-02","VP","U6-4","Sombreros para pensar (1)(2)","MAIK"],
 ["2026-09-03","D1","U6-4","Sombreros para pensar (1)(2)","MAIK"],
 ["2026-09-03","D2","U6-4","Coaching Etapa 5 PLAN DE ACCIÓN (1)(2)","MARCE"],
@@ -106,6 +113,10 @@ const PROGRAMA = [
 ["2026-12-17","FL","U5-2","Afirmaciones y Declaraciones (1)(2)","FER"]
 ];
 
+// Sedes cuyo responsable el Canva no distingue: comparten casilla con Delfos.
+// Mientras Marce no lo confirme, lo que se muestra es un supuesto.
+const SEDES_SIN_CONFIRMAR = ['VP', 'PC'];
+
 // Todas las clases de una fecha (clave con formato "2026-08-20")
 function clasesDelDia(clave) {
   return PROGRAMA.filter(f => f[0] === clave).map(f => ({
@@ -115,8 +126,19 @@ function clasesDelDia(clave) {
     tema: f[3],
     responsable: f[4],
     sede: SEDES[f[1]] || null,
-    esMio: f[4].indexOf(YO) !== -1
+    esMio: f[4].indexOf(YO) !== -1,
+    supuesto: f[5] !== 'ok' && SEDES_SIN_CONFIRMAR.indexOf(f[1]) !== -1
   }));
+}
+
+// Las clases de Villa del Parque y Parque Chacabuco que todavía arrastran el
+// responsable de Delfos, de una fecha en adelante. Es la lista de lo que hay
+// que confirmar con Marce.
+function clasesPorConfirmar(desdeClave) {
+  return PROGRAMA
+    .filter(f => f[0] >= desdeClave && f[5] !== 'ok' &&
+                 SEDES_SIN_CONFIRMAR.indexOf(f[1]) !== -1)
+    .map(f => ({ clave: f[0], sedeCod: f[1], unidad: f[2], tema: f[3], responsable: f[4] }));
 }
 
 // Las clases de ese día que das vos

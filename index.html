@@ -123,6 +123,11 @@
   .clase .tema { font-weight: 600; color: var(--texto); }
   .clase .meta { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
 
+  .sinConfirmar {
+    font-size: 12px; color: var(--alerta); margin-top: 5px;
+    background: var(--alerta-bg); border-radius: 6px; padding: 4px 7px;
+  }
+
   /* Huecos convertidos en bloques de trabajo */
   .trabajo {
     border: 1px dashed #c9c2b6; border-radius: 12px; padding: 12px 15px;
@@ -323,14 +328,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=16"></script>
-<script src="comidas.js?v=16"></script>
-<script src="app.js?v=16"></script>
-<script src="salidas.js?v=16"></script>
-<script src="planes.js?v=16"></script>
-<script src="ejercicios.js?v=16"></script>
-<script src="reuniones-datos.js?v=16"></script>
-<script src="reuniones.js?v=16"></script>
+<script src="programa.js?v=17"></script>
+<script src="comidas.js?v=17"></script>
+<script src="app.js?v=17"></script>
+<script src="salidas.js?v=17"></script>
+<script src="planes.js?v=17"></script>
+<script src="ejercicios.js?v=17"></script>
+<script src="reuniones-datos.js?v=17"></script>
+<script src="reuniones.js?v=17"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -510,6 +515,7 @@ function dibujar(sinConexion) {
         <div class="hora">${esc(c.sede.hora)}</div>
         <div class="titulo">${esc(c.sede.nombre)} · ${esc(c.sede.detalle)}</div>
         <div class="meta">Da ${esc(c.responsable)} — ${esc(c.tema)}</div>
+        ${c.supuesto ? '<div class="sinConfirmar">⚠️ Sin confirmar</div>' : ''}
       </div>` });
     }
     // Clase tuya que el calendario no refleja (ej: ese jueves das en FLACSO, no en Delfos)
@@ -824,6 +830,7 @@ function bloqueClases(ev) {
     return `<div class="clase ${c.esMio ? 'mia' : 'otro'}">
       <div class="quien">${c.esMio ? '★ Te toca a vos' : 'Da ' + esc(c.responsable)}${
         cursada ? ' · ' + esc(cursada) : ''}</div>
+      ${c.supuesto ? '<div class="sinConfirmar">⚠️ Sin confirmar: es el responsable de Delfos. Decime quién da acá.</div>' : ''}
       <div class="tema">${esc(c.tema)}</div>
       ${c.unidad ? `<div class="meta">Unidad ${esc(c.unidad.replace('U','').replace('-',' · clase '))}</div>` : ''}
     </div>`;
