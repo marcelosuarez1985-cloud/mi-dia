@@ -68,7 +68,11 @@ function minutosTraslado(titulo, lugar, tipo) {
   if (/virtual|zoom|meet|online/.test(t)) return 0;
   if (tipo === 'entrenamiento') {
     if (/casa|domicilio/.test(t)) return 0;
-    return 5;                                          // SportClub Flores, 3 cuadras
+    // Natación y Zumba son clases con horario fijo: hay que estar antes.
+    // Al club son 10 minutos. Natación pide 5 más para cambiarse.
+    if (/nataci/.test(t)) return 15;
+    if (/zumba/.test(t))  return 10;
+    return 5;    // musculación: entrás cuando llegás, no hay horario que perder
   }
   if (tipo === 'docencia') {
     if (/p\.c\.|parque chacabuco/.test(t)) return 70;   // cerca: ingresa 1 h antes
