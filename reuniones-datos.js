@@ -8,7 +8,7 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-08-27';
+const REUNIONES_ACTUALIZADO = '2026-08-28';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
@@ -32,8 +32,6 @@ const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Intensivo Noviembre", tarea: "Comenzar los preparativos. Lugar, fecha, cantidad de días.", responsable: "Todos", vence: "24/8/2026", propone: "Fernando Ferrara", desde: "10/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "❌ Sin empezar", tema: "Viaje a Córdoba: Reunidos", tarea: "Chequear si vamos, cómo ajustar los días de Parque Chacabuco.", responsable: "Todos", vence: "22/8/2026", propone: "Fernando Ferrara", desde: "10/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "⌛En cola", tema: "Cuentas PRO", tarea: "Observar las suscripciones que tengamos", responsable: "Todos", vence: "20/8/2026", propone: "Marcelo Suárez", desde: "17/8/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Programa de clases", tarea: "Presentar una nueva propuesta de distado de clases", responsable: "Marcelo Suárez", vence: "20/8/2026", propone: "Marcelo Suárez", desde: "17/8/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Acta (N° 53)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "20/8/2026", propone: "Miguel Brito", desde: "17/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Informe de la campaña 26/27", tarea: "Armar un informe para ver la eficiencia, ROAS, etc. de la campaña.", responsable: "Alejandro Ortíz", vence: "22/8/2026", propone: "Alejandro Ortíz", desde: "17/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Social Funnel", tarea: "Estoy en un curso de funnel de ventas. Lo voy a probar un mes con el curso de oratoria y luego ver cómo adaptarlo a cursos cortos y a la carrera para la siguiente campaña. Traeré comentarios y resultados en un mes aprox.", responsable: "Alejandro Ortíz", vence: "22/9/2026", propone: "Alejandro Ortíz", desde: "17/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "❌ Sin empezar", tema: "tutoriales para planillas para estudiantes de segundo año", tarea: "chequear", responsable: "Marcelo Suárez", vence: "20/8/2026", propone: "Fernando Ferrara", desde: "17/8/2026" },
@@ -43,6 +41,9 @@ const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Fase 3", tarea: "Acuerdos", responsable: "", vence: "", propone: "Fernando Ferrara", desde: "" },
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Libro de Actas (N° 55)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "", propone: "Marcelo Suárez", desde: "24/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Conferencia 2026", tarea: "Definir como juntamos las 3 sedes", responsable: "", vence: "", propone: "Fernando Ferrara", desde: "" },
+  { reunion: "ECOA.RE Directorio", estado: "", tema: "Alternar la presencia de los 4 en las sedes", tarea: "", responsable: "", vence: "", propone: "Alejandro Ortíz", desde: "27/8/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "", tema: "Honorarios según escala y estudiantes", tarea: "", responsable: "", vence: "", propone: "Alejandro Ortíz", desde: "27/8/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "", tema: "Libro de Actas (N° 56)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "", propone: "Marcelo Suárez", desde: "27/8/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Diplomatura “Coaching para Líder de Equipos”", tarea: "Armar un nuevo curso", responsable: "Marcelo Suárez", vence: "30/8/2026", propone: "Marcelo Suárez", desde: "4/3/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Página Web de GIGNiT", tarea: "Agregar una sección de Coaching Organizacional.", responsable: "Alejandro Ortíz", vence: "31/8/2026", propone: "Alejandro Ortíz", desde: "26/6/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Clase mentalidad emprendedora", tarea: "Hacer difusión para los Coaches o estudiantes avanzados", responsable: "Todos", vence: "24/8/2026", propone: "Marcelo Suárez", desde: "12/8/2026" },
