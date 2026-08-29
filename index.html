@@ -106,6 +106,7 @@
     padding: 2px 7px; border-radius: 6px; margin-left: 6px;
     background: #e9f5ee; color: var(--entrenamiento); vertical-align: middle;
   }
+  .badge.sinResp { background: #fdf0e2; color: var(--comida); }
 
   /* Bloque del programa de clases dentro de cada evento */
   .clase {
@@ -122,6 +123,26 @@
   .clase.otro .quien { color: var(--texto-suave); }
   .clase .tema { font-weight: 600; color: var(--texto); }
   .clase .meta { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
+
+  /* Invitaciones que todavía no contestaste */
+  .invitaciones {
+    background: #fdf6ee; border: 1px solid #ecdcc6;
+    border-radius: 16px; padding: 15px 17px; margin-bottom: 14px;
+  }
+  .invitaciones .etiqueta {
+    font-size: 12.5px; color: var(--comida); margin-bottom: 9px;
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600;
+  }
+  .invita + .invita { margin-top: 11px; padding-top: 11px; border-top: 1px solid #ecdcc6; }
+  .invita .que { font-size: 16px; font-weight: 600; line-height: 1.3; }
+  .invita .cuando { font-size: 13.5px; color: var(--texto-suave); margin-top: 3px; }
+  .invita .dequien { font-size: 13px; color: var(--texto-suave); margin-top: 2px; }
+  .abrirCal {
+    display: inline-block; margin-top: 12px; font-size: 13.5px; font-weight: 600;
+    color: var(--comida); text-decoration: none;
+    border: 1px solid #ecdcc6; border-radius: 8px; padding: 7px 13px;
+    background: var(--tarjeta);
+  }
 
   /* Alguien cubre la clase de otro porque el titular está en FLACSO */
   .cubre {
@@ -471,6 +492,28 @@ function dibujar(sinConexion) {
     }
   }
 
+  // ── Invitaciones esperando respuesta ──
+  const pendientes = invitacionesPendientes(EVENTOS, hoy.clave);
+  if (pendientes.length) {
+    html.push(`<div class="invitaciones">
+      <div class="etiqueta">📨 Te están esperando (${pendientes.length})</div>
+      ${pendientes.map(e => {
+        const quien = nombreDeMail(e.invitaba);
+        const cuando = cuandoEs(hoy.clave, e.clave);
+        return `<div class="invita">
+          <div class="que">${esc(e.titulo)}</div>
+          <div class="cuando">${esc(cuando)}${
+            e.todoElDia ? '' : ' · ' + esc(e.hhmmIni) + '–' + esc(e.hhmmFin)}${
+            e.lugar ? ' · ' + esc(e.lugar) : ''}</div>
+          ${quien ? `<div class="dequien">Te invitó ${esc(quien)}</div>` : ''}
+          ${e.quizas ? '<div class="dequien">Contestaste «quizás».</div>' : ''}
+        </div>`;
+      }).join('')}
+      <a class="abrirCal" target="_blank" rel="noopener"
+         href="https://calendar.google.com/calendar/r">Responder en el calendario</a>
+    </div>`);
+  }
+
   // ── Lo próximo ──
   const proximo = EVENTOS.find(ev => ev.fin > ahora && !ev.todoElDia);
   if (proximo && (!vigilado || vigilado.id !== proximo.id || proximo.minSalida - hoy.minutos > AVISO_ANTES)) {
@@ -481,7 +524,11 @@ function dibujar(sinConexion) {
       etiqueta = 'Ahora mismo';
       detalle = `Termina ${proximo.hhmmFin} · quedan ${duracionTexto(Math.round((proximo.fin - ahora) / 60000))}`;
     } else {
-      etiqueta = esHoy ? `Lo próximo · en ${duracionTexto(Math.round((proximo.ini - ahora) / 60000))}` : 'Lo próximo · mañana';
+      // Ojo: no todo lo que no es hoy es mañana. Un sábado a la noche lo
+      // próximo cae el lunes, porque el domingo es día de descanso.
+      etiqueta = esHoy
+        ? `Lo próximo · en ${duracionTexto(Math.round((proximo.ini - ahora) / 60000))}`
+        : `Lo próximo · ${cuandoEs(hoy.clave, proximo.clave)}`;
       detalle = `${proximo.hhmmIni}–${proximo.hhmmFin}`;
     }
     if (proximo.lugar) detalle += ` · ${proximo.lugar}`;
@@ -623,7 +670,8 @@ function tarjeta(ev, ahora, evsDelDia) {
   const hora = ev.todoElDia ? 'Todo el día' : `${ev.hhmmIni} – ${ev.hhmmFin}`;
   return `<div class="evento ${ev.tipo} ${pasado ? 'pasado' : ''} ${enCurso ? 'enCurso' : ''}">
     <div class="hora">${hora}${enCurso ? '<span class="badge">ahora</span>' : ''}</div>
-    <div class="titulo">${esc(ev.titulo)}</div>
+    <div class="titulo">${esc(ev.titulo)}${
+      ev.sinResponder ? '<span class="badge sinResp">' + (ev.quizas ? 'dijiste quizás' : 'sin responder') + '</span>' : ''}</div>
     ${ev.lugar ? `<div class="lugar">${esc(ev.lugar)}</div>` : ''}
     ${ev.descripcion ? `<div class="desc">${esc(ev.descripcion)}</div>` : ''}
     ${bloqueClases(ev)}

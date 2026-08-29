@@ -121,6 +121,10 @@ function prepararEventos(crudos) {
       descripcion: (ev.descripcion || '').trim(),
       todoElDia: ev.todoElDia,
       tipo, traslado, lugar,
+      // "INVITED" = te invitaron y no contestaste · "MAYBE" = dijiste quizás
+      sinResponder: ev.respuesta === 'INVITED' || ev.respuesta === 'MAYBE',
+      quizas: ev.respuesta === 'MAYBE',
+      invitaba: ev.invitaba || '',
       clave: pi.clave,
       ini, fin,
       minIni: pi.minutos,
@@ -347,4 +351,33 @@ function sugerenciaDeComida(ev) {
     plato,
     horarios: `${hhmm(ev.minIni)} cocinar · ${hhmm(comer)} comer · ${hhmm(comer + 30)} parar`
   };
+}
+
+// "mañana", "el lunes", "el jueves que viene" — según cuántos días falten.
+// Existe porque la app decía "mañana" para cualquier cosa que no fuera hoy, y
+// un sábado a la noche eso hacía aparecer el lunes como si fuera el domingo.
+function cuandoEs(hoyClave, clave) {
+  const dias = Math.round(
+    (new Date(clave + 'T12:00:00') - new Date(hoyClave + 'T12:00:00')) / 86400000);
+  if (dias <= 0) return 'hoy';
+  if (dias === 1) return 'mañana';
+  const nombre = new Date(clave + 'T12:00:00')
+    .toLocaleDateString('es-AR', { weekday: 'long' });
+  if (dias <= 6) return 'el ' + nombre;
+  return 'el ' + nombre + ' que viene';
+}
+
+// ───────── Invitaciones sin responder ─────────
+// Eventos que otro te mandó y siguen esperando un sí o un no. Aparecen aparte
+// porque es fácil que se pierdan entre lo que ya está confirmado.
+function invitacionesPendientes(eventos, hoyClave) {
+  return eventos
+    .filter(e => e.sinResponder && e.clave >= hoyClave)
+    .sort((a, b) => a.ini - b.ini);
+}
+
+// El mail del que invita, en algo legible: "alejandrortiz84@gmail.com" → "alejandrortiz84"
+function nombreDeMail(mail) {
+  if (!mail) return '';
+  return mail.split('@')[0].replace(/[._]/g, ' ');
 }
