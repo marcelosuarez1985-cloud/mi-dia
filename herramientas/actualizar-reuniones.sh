@@ -20,10 +20,7 @@ fi
 
 # Subir la versión hace que los teléfonos bajen la copia nueva en vez de
 # quedarse con la vieja guardada. Ya pasó una vez: sin esto, no llega.
-v=$(grep -o "mi-dia-v[0-9]*" sw.js | head -1 | tr -d 'a-z-')
-nueva=$((v + 1))
-sed -i "s|?v=$v|?v=$nueva|g" index.html
-sed -i "s|mi-dia-v$v|mi-dia-v$nueva|" sw.js
+sh herramientas/subir-version.sh
 
 git add -A
 git commit -q -m "Actualiza los temas de reunión desde Canva ($(date +%d/%m/%Y))
@@ -32,4 +29,4 @@ Regenerado por herramientas/actualizar-reuniones.sh.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 git push -q
-echo "PUBLICADO v$nueva"
+echo "PUBLICADO"
