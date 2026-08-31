@@ -8,7 +8,7 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-08-28';
+const REUNIONES_ACTUALIZADO = '2026-08-31';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
@@ -44,6 +44,7 @@ const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Alternar la presencia de los 4 en las sedes", tarea: "", responsable: "", vence: "", propone: "Alejandro Ortíz", desde: "27/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Honorarios según escala y estudiantes", tarea: "", responsable: "", vence: "", propone: "Alejandro Ortíz", desde: "27/8/2026" },
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Libro de Actas (N° 56)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "", propone: "Marcelo Suárez", desde: "27/8/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "⌛En cola", tema: "App de cobro", tarea: "Necesitamos pedirles los cuits a los estudiantes", responsable: "", vence: "30/11/2026", propone: "Marcelo Suárez", desde: "29/8/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Diplomatura “Coaching para Líder de Equipos”", tarea: "Armar un nuevo curso", responsable: "Marcelo Suárez", vence: "30/8/2026", propone: "Marcelo Suárez", desde: "4/3/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Página Web de GIGNiT", tarea: "Agregar una sección de Coaching Organizacional.", responsable: "Alejandro Ortíz", vence: "31/8/2026", propone: "Alejandro Ortíz", desde: "26/6/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Clase mentalidad emprendedora", tarea: "Hacer difusión para los Coaches o estudiantes avanzados", responsable: "Todos", vence: "24/8/2026", propone: "Marcelo Suárez", desde: "12/8/2026" },
