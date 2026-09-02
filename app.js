@@ -51,8 +51,64 @@ function esc(s) {
 }
 
 // ───────── Clasificación de eventos ─────────
+// Deportes que Marce sigue. Vienen de calendarios suscritos, no los carga él.
+const DEPORTES = [
+  { re: /f1|f[oó]rmula 1|gran premio|grand prix/i, icono: '🏎️', quien: 'Colapinto' },
+  { re: /river plate/i,                                  icono: '⚽', quien: 'River' },
+  { re: /inter miami/i,                                  icono: '⚽', quien: 'Messi' }
+];
+
+function deporteDe(titulo) {
+  for (const d of DEPORTES) if (d.re.test(titulo)) return d;
+  return null;
+}
+
+// Cómo se llama cada sesión de un fin de semana de Fórmula 1, en criollo.
+const SESIONES_F1 = [
+  [/sprint.*qualif|sprint shootout/i, 'Clasificación sprint'],
+  [/sprint/i,                         'Carrera sprint'],
+  [/grand prix|gran premio/i,         'La carrera'],
+  [/qualifying|clasific/i,            'Clasificación'],
+  [/\bfp1\b|practice 1/i,             'Práctica 1'],
+  [/\bfp2\b|practice 2/i,             'Práctica 2'],
+  [/\bfp3\b|practice 3/i,             'Práctica 3']
+];
+
+// Los nombres de los Grandes Premios vienen en inglés y como gentilicio.
+const PAISES_F1 = {
+  Australian:'Australia', Chinese:'China', Japanese:'Japón', Bahrain:'Bahréin',
+  'Saudi Arabian':'Arabia Saudita', Miami:'Miami', Canadian:'Canadá',
+  'Emilia Romagna':'Imola', Monaco:'Mónaco', Spanish:'España', Austrian:'Austria',
+  British:'Gran Bretaña', Hungarian:'Hungría', Belgian:'Bélgica', Dutch:'Países Bajos',
+  Italian:'Italia', Madrid:'Madrid', Azerbaijan:'Azerbaiyán', Singapore:'Singapur',
+  'United States':'Estados Unidos', 'Mexico City':'México', Mexican:'México',
+  'São Paulo':'Brasil', Brazilian:'Brasil', 'Las Vegas':'Las Vegas',
+  Qatar:'Qatar', 'Abu Dhabi':'Abu Dhabi', Malaysian:'Malasia', Portuguese:'Portugal'
+};
+
+// "F1: FP2 (Italian Grand Prix)" → { que: 'Práctica 2', donde: 'GP de Italia' }
+//
+// Ojo: la sesión hay que buscarla SÓLO en la parte de afuera del paréntesis.
+// Adentro siempre dice "Grand Prix", así que si se busca en todo el título
+// las prácticas también salen como si fueran la carrera. Ya pasó.
+function detalleF1(titulo) {
+  const m = titulo.match(/\(([^)]+)\)/);
+  const sesion = titulo.replace(/\s*\([^)]*\)\s*/, '');
+
+  let que = '';
+  for (const [re, nombre] of SESIONES_F1) if (re.test(sesion)) { que = nombre; break; }
+
+  let donde = '';
+  if (m) {
+    const bruto = m[1].replace(/\s*Grand Prix\s*$/i, '').trim();
+    donde = 'GP de ' + (PAISES_F1[bruto] || bruto);
+  }
+  return { que, donde };
+}
+
 function clasificar(titulo) {
   const t = titulo.toLowerCase();
+  if (deporteDe(titulo)) return 'deporte';
   if (/musculaci|zumba|nataci|trote|gimnasio|cardio|yoga|stretching|cycle|movilidad|caminata|elongaci|bici|cinta/.test(t)) return 'entrenamiento';
   if (/comida|pausa|almuerzo|cena/.test(t)) return 'comida';
   if (/familia/.test(t)) return 'familia';
@@ -125,6 +181,12 @@ function prepararEventos(crudos) {
       sinResponder: ev.respuesta === 'INVITED' || ev.respuesta === 'MAYBE',
       quizas: ev.respuesta === 'MAYBE',
       invitaba: ev.invitaba || '',
+      // Un partido o una carrera no es un compromiso: se mira, no se va a
+      // ningún lado. Por eso no ocupa el día, no tapa un bloque de trabajo y
+      // no corre la hora de soltar el celular.
+      deporte: deporteDe(ev.titulo),
+      externo: ev.propio === false,
+      calendario: ev.calendario || '',
       clave: pi.clave,
       ini, fin,
       minIni: pi.minutos,
@@ -140,7 +202,7 @@ function prepararEventos(crudos) {
 // ───────── Alertas del día ─────────
 function detectarAlertas(evs) {
   const alertas = [];
-  const conHora = evs.filter(e => !e.todoElDia);
+  const conHora = evs.filter(e => !e.todoElDia && e.tipo !== 'deporte');
   for (let i = 1; i < conHora.length; i++) {
     const ant = conHora[i - 1], act = conHora[i];
     if (act.minIni < ant.minFin) {
@@ -163,13 +225,15 @@ function detectarAlertas(evs) {
 // "hora de arranque": si los tomáramos como referencia saldrían horarios absurdos.
 function esCompromisoReal(ev) {
   return !ev.todoElDia && ev.tipo !== 'comida' && ev.tipo !== 'familia'
+      && ev.tipo !== 'deporte'
       && ev.tipo !== 'trabajo';   // un bloque de trabajo en casa no fija la hora de levantarse
 }
 
 // A qué hora terminás hoy. Un bloque de trabajo cuenta: si el día se te va
 // hasta las 19, terminaste a las 19.
 function finDelDia(eventos, hoy) {
-  const deHoy = eventos.filter(e => e.clave === hoy.clave && !e.todoElDia && e.tipo !== 'comida');
+  const deHoy = eventos.filter(e => e.clave === hoy.clave && !e.todoElDia
+                                 && e.tipo !== 'comida' && e.tipo !== 'deporte');
   if (!deHoy.length) return null;
   return Math.max(...deHoy.map(e => e.minFin));
 }
@@ -315,7 +379,7 @@ function bloquesDeTrabajo(evsDelDia) {
   // La vuelta importa: el sábado terminás en Parque Chacabuco a las 12:00 y
   // esa hora siguiente es el viaje, no tiempo libre.
   const ocupado = evsDelDia
-    .filter(e => !e.todoElDia)
+    .filter(e => !e.todoElDia && e.tipo !== 'deporte')
     .map(e => [Math.min(e.minIni, e.minSalida), e.minFin + e.traslado])
     .sort((a, b) => a[0] - b[0]);
 
@@ -380,4 +444,35 @@ function invitacionesPendientes(eventos, hoyClave) {
 function nombreDeMail(mail) {
   if (!mail) return '';
   return mail.split('@')[0].replace(/[._]/g, ' ');
+}
+
+// ───────── Deportes ─────────
+// Cómo mostrar un partido o una sesión de F1 en criollo.
+// "F1: FP2 (Italian Grand Prix)" → "🏎️ Práctica 2 · Italian Grand Prix"
+function tituloDeporte(ev) {
+  const d = ev.deporte;
+  if (!d) return ev.titulo;
+  if (d.quien === 'Colapinto') {
+    const f = detalleF1(ev.titulo);
+    return d.icono + ' ' + (f.que || 'Fórmula 1') + (f.donde ? ' · ' + f.donde : '');
+  }
+  // Los feeds de fútbol traen el resultado entre paréntesis cuando ya se jugó
+  return d.icono + ' ' + ev.titulo.replace(/\s*\(\d+-\d+\)\s*$/, '');
+}
+
+// Los próximos partidos y carreras, de hoy en adelante.
+function proximosDeportes(eventos, hoyClave) {
+  return eventos
+    .filter(e => e.tipo === 'deporte' && e.clave >= hoyClave)
+    .sort((a, b) => a.ini - b.ini);
+}
+
+// Agrupados por día, para que un fin de semana de F1 no sean cinco renglones sueltos
+function deportesPorDia(eventos, hoyClave) {
+  const dias = new Map();
+  for (const e of proximosDeportes(eventos, hoyClave)) {
+    if (!dias.has(e.clave)) dias.set(e.clave, []);
+    dias.get(e.clave).push(e);
+  }
+  return [...dias.entries()];
 }

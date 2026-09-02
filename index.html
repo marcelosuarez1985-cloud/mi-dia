@@ -144,6 +144,24 @@
     background: var(--tarjeta);
   }
 
+  /* Partidos y carreras. Se miran, no ocupan el día. */
+  .evento.deporte { border-left-color: #7a6ca8; background: #faf9fc; }
+  .depDia {
+    font-size: 12.5px; font-weight: 700; color: var(--texto-suave);
+    text-transform: capitalize; margin: 12px 0 5px 3px;
+  }
+  .dep {
+    display: flex; gap: 11px; align-items: baseline;
+    background: var(--tarjeta); border: 1px solid var(--borde);
+    border-left: 4px solid #7a6ca8; border-radius: 10px;
+    padding: 9px 13px; margin-bottom: 6px;
+  }
+  .dep .depHora {
+    font-size: 13.5px; font-weight: 700; color: var(--texto-suave);
+    font-variant-numeric: tabular-nums; flex: 0 0 auto;
+  }
+  .dep .depQue { font-size: 14.5px; line-height: 1.35; }
+
   /* Alguien cubre la clase de otro porque el titular está en FLACSO */
   .cubre {
     font-size: 12px; color: var(--texto-suave); margin-top: 5px;
@@ -350,14 +368,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=25"></script>
-<script src="comidas.js?v=25"></script>
-<script src="app.js?v=25"></script>
-<script src="salidas.js?v=25"></script>
-<script src="planes.js?v=25"></script>
-<script src="ejercicios.js?v=25"></script>
-<script src="reuniones-datos.js?v=25"></script>
-<script src="reuniones.js?v=25"></script>
+<script src="programa.js?v=26"></script>
+<script src="comidas.js?v=26"></script>
+<script src="app.js?v=26"></script>
+<script src="salidas.js?v=26"></script>
+<script src="planes.js?v=26"></script>
+<script src="ejercicios.js?v=26"></script>
+<script src="reuniones-datos.js?v=26"></script>
+<script src="reuniones.js?v=26"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -619,6 +637,7 @@ function dibujar(sinConexion) {
   }
 
   // ── Temas de reunión ──
+  html.push(bloqueDeportes(hoy));
   html.push(bloqueReuniones(hoy));
 
   // ── Los próximos días ──
@@ -670,7 +689,7 @@ function tarjeta(ev, ahora, evsDelDia) {
   const hora = ev.todoElDia ? 'Todo el día' : `${ev.hhmmIni} – ${ev.hhmmFin}`;
   return `<div class="evento ${ev.tipo} ${pasado ? 'pasado' : ''} ${enCurso ? 'enCurso' : ''}">
     <div class="hora">${hora}${enCurso ? '<span class="badge">ahora</span>' : ''}</div>
-    <div class="titulo">${esc(ev.titulo)}${
+    <div class="titulo">${esc(ev.deporte ? tituloDeporte(ev) : ev.titulo)}${
       ev.sinResponder ? '<span class="badge sinResp">' + (ev.quizas ? 'dijiste quizás' : 'sin responder') + '</span>' : ''}</div>
     ${ev.lugar ? `<div class="lugar">${esc(ev.lugar)}</div>` : ''}
     ${ev.descripcion ? `<div class="desc">${esc(ev.descripcion)}</div>` : ''}
@@ -679,6 +698,51 @@ function tarjeta(ev, ahora, evsDelDia) {
     ${bloqueCumplimiento(ev, ahora, evsDelDia || [])}
     ${bloqueEjercicios(ev)}
   </div>`;
+}
+
+// ───────── Deportes ─────────
+let DEPORTES_ABIERTO = false;
+function verDeportes() {
+  DEPORTES_ABIERTO = !DEPORTES_ABIERTO;
+  dibujar();
+}
+
+function bloqueDeportes(hoy) {
+  if (typeof deportesPorDia !== 'function') return '';
+  const dias = deportesPorDia(EVENTOS, hoy.clave);
+  if (!dias.length) return '';
+
+  // Cuántos hay de cada uno, para el resumen de la cabecera
+  const cuenta = {};
+  for (const [, evs] of dias) for (const e of evs) {
+    const q = e.deporte.quien;
+    cuenta[q] = (cuenta[q] || 0) + 1;
+  }
+  const resumen = Object.entries(cuenta)
+    .map(([q, n]) => n === 1 ? q : `${q} (${n})`).join(' · ');
+
+  let h = '<h2>Deportes</h2>';
+  h += `<div class="reuCabecera" onclick="verDeportes()">
+    <div class="titulo">⚽🏎️ Lo que viene</div>
+    <div class="cuenta">${esc(resumen)}</div>
+    <div class="flecha">${DEPORTES_ABIERTO ? '▲' : '▼'}</div>
+  </div>`;
+
+  if (DEPORTES_ABIERTO) {
+    for (const [clave, evs] of dias) {
+      const cuando = cuandoEs(hoy.clave, clave);
+      h += `<div class="depDia">${esc(cuando.charAt(0).toUpperCase() + cuando.slice(1))}</div>`;
+      for (const e of evs) {
+        h += `<div class="dep">
+          <div class="depHora">${esc(e.hhmmIni)}</div>
+          <div class="depQue">${esc(tituloDeporte(e))}</div>
+        </div>`;
+      }
+    }
+    h += `<div class="pie">Horarios de Argentina. Salen de los calendarios que
+      seguís, así que se corrigen solos si mueven un partido.</div>`;
+  }
+  return h;
 }
 
 // ───────── Temas de reunión ─────────
