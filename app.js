@@ -53,9 +53,12 @@ function esc(s) {
 // ───────── Clasificación de eventos ─────────
 // Deportes que Marce sigue. Vienen de calendarios suscritos, no los carga él.
 const DEPORTES = [
-  { re: /f1|f[oó]rmula 1|gran premio|grand prix/i, icono: '🏎️', quien: 'Colapinto' },
-  { re: /river plate/i,                                  icono: '⚽', quien: 'River' },
-  { re: /inter miami/i,                                  icono: '⚽', quien: 'Messi' }
+  // El emoji va primero: los eventos que carga la tarea automática ya vienen
+  // con el nombre en castellano ("🏎️ Práctica 1 · GP de Italia"), y buscar sólo
+  // los nombres en inglés del feed los dejaba afuera. Ya pasó.
+  { re: /🏎️|f1|f[oó]rmula 1|gran premio|grand prix|gp de/i, icono: "🏎️", quien: "Colapinto" },
+  { re: /river/i,     icono: "⚽", quien: "River" },
+  { re: /inter miami/i, icono: "⚽", quien: "Messi" }
 ];
 
 function deporteDe(titulo) {
@@ -452,6 +455,9 @@ function nombreDeMail(mail) {
 function tituloDeporte(ev) {
   const d = ev.deporte;
   if (!d) return ev.titulo;
+  // Si ya viene con el emoji adelante, es uno de los que cargó la tarea
+  // automática: ya está en castellano y no hay nada que traducir.
+  if (/^\s*(🏎|⚽)/u.test(ev.titulo)) return ev.titulo.trim();
   if (d.quien === 'Colapinto') {
     const f = detalleF1(ev.titulo);
     return d.icono + ' ' + (f.que || 'Fórmula 1') + (f.donde ? ' · ' + f.donde : '');
