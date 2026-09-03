@@ -355,6 +355,8 @@ function clasesSinEvento(evsDelDia, clave) {
 
 // ───────── Clases de otras sedes, sin evento propio en el calendario ─────────
 // Marce quiere ver qué se dicta en FLACSO aunque ese jueves no le toque a él.
+// Salvo que ese titular ya aparezca mencionado como "cubre a" en su propia
+// sede (ej: Delfos) — ahí ya está dicho, no hace falta la tarjeta aparte.
 function clasesInformativas(evsDelDia, clave) {
   if (typeof clasesDelDia !== 'function') return [];
   const cubiertas = [];
@@ -362,8 +364,12 @@ function clasesInformativas(evsDelDia, clave) {
     const cods = SEDE_POR_LUGAR[ev.lugar];
     if (cods) cubiertas.push(...cods);
   }
-  return clasesDelDia(clave)
-    .filter(c => !c.esMio && c.sede && cubiertas.indexOf(c.sedeCod) === -1);
+  const clases = clasesDelDia(clave);
+  const yaMencionado = new Set(
+    clases.filter(c => cubiertas.indexOf(c.sedeCod) !== -1 && c.cubreA).map(c => c.cubreA)
+  );
+  return clases.filter(c => !c.esMio && c.sede
+    && cubiertas.indexOf(c.sedeCod) === -1 && !yaMencionado.has(c.responsable));
 }
 
 // ───────── Bloques de trabajo en los huecos del día ─────────
