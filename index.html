@@ -368,14 +368,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=30"></script>
-<script src="comidas.js?v=30"></script>
-<script src="app.js?v=30"></script>
-<script src="salidas.js?v=30"></script>
-<script src="planes.js?v=30"></script>
-<script src="ejercicios.js?v=30"></script>
-<script src="reuniones-datos.js?v=30"></script>
-<script src="reuniones.js?v=30"></script>
+<script src="programa.js?v=31"></script>
+<script src="comidas.js?v=31"></script>
+<script src="app.js?v=31"></script>
+<script src="salidas.js?v=31"></script>
+<script src="planes.js?v=31"></script>
+<script src="ejercicios.js?v=31"></script>
+<script src="reuniones-datos.js?v=31"></script>
+<script src="reuniones.js?v=31"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -943,7 +943,7 @@ function bloqueClases(ev) {
     return `<div class="clase ${c.esMio ? 'mia' : 'otro'}">
       <div class="quien">${c.esMio ? '★ Te toca a vos' : 'Da ' + esc(c.responsable)}${
         cursada ? ' · ' + esc(cursada) : ''}</div>
-      ${c.cubreA ? '<div class="cubre">🔄 Cubre a ' + esc(c.cubreA) + ', que hoy da en FLACSO.</div>' : ''}
+      ${c.cubreA ? '<div class="cubre">🔄 Cubre a ' + esc(c.cubreA) + '.</div>' : ''}
       <div class="tema">${esc(c.tema)}</div>
       ${c.unidad ? `<div class="meta">Unidad ${esc(c.unidad.replace('U','').replace('-',' · clase '))}</div>` : ''}
     </div>`;

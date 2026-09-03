@@ -27,8 +27,8 @@ function diasHasta(f, hoyClave) {
 }
 
 const CERRADO = /Listo|Descartado/;
-// "Todos" como responsable es lo mismo que nadie: no hay una persona a cargo.
-const SIN_DUENIO = /^(todos|todes)$/i;
+// Los temas recurrentes no tienen una fecha límite real: no se evalúan por fecha.
+const RECURRENTE = /Recurrente/;
 
 // Agrupa los temas por urgencia. Cada tema aparece una sola vez,
 // en el primer grupo que le corresponde.
@@ -36,19 +36,19 @@ function temasPorUrgencia(hoyClave, reunion) {
   const g = { vencidos: [], porVencer: [], faltaCompletar: [], enMarcha: [], cerrados: [] };
   for (const t of TEMAS) {
     if (reunion && t.reunion !== reunion) continue;
-    const dias = diasHasta(t.vence, hoyClave);
     const cerrado = CERRADO.test(t.estado);
+    const recurrente = RECURRENTE.test(t.estado);
+    const dias = recurrente ? null : diasHasta(t.vence, hoyClave);
     const item = Object.assign({}, t, { dias });
 
     if (cerrado) { g.cerrados.push(item); continue; }
-    if (dias !== null && dias < 0)  { g.vencidos.push(item); continue; }
-    if (dias !== null && dias <= 7) { g.porVencer.push(item); continue; }
+    if (!recurrente && dias !== null && dias < 0)  { g.vencidos.push(item); continue; }
+    if (!recurrente && dias !== null && dias <= 7) { g.porVencer.push(item); continue; }
 
     const faltas = [];
     if (!t.estado) faltas.push('sin categorizar');
     if (!t.responsable) faltas.push('sin responsable');
-    else if (SIN_DUENIO.test(t.responsable.trim())) faltas.push('responsable "todos" = nadie');
-    if (!t.vence) faltas.push('sin fecha límite');
+    if (!recurrente && !t.vence) faltas.push('sin fecha límite');
     if (faltas.length) { item.faltas = faltas; g.faltaCompletar.push(item); continue; }
 
     g.enMarcha.push(item);
