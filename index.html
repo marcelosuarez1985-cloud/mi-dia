@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b0f1f">
+<meta name="theme-color" content="#05070f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -12,18 +12,18 @@
 <title>Mi día — Asistente personal</title>
 <style>
   :root {
-    --fondo: #0a0e1c;
+    --fondo: #05070f;
     --tarjeta: #131a33;
     --tarjeta-alta: #1a2247;
     --texto: #e8ecfa;
-    --texto-suave: #8b93bd;
-    --borde: #262f57;
+    --texto-suave: #a3addc;
+    --borde: #2c3768;
     --entrenamiento: #35e0a1;
     --docencia: #4d9fff;
-    --reunion: #8f97c4;
+    --reunion: #8f8fff;
     --comida: #ffb454;
     --familia: #c792ff;
-    --otro: #5c6690;
+    --otro: #6b7fd6;
     --alerta: #ff5d7a;
     --alerta-bg: #2a1420;
     --urgente: #ff3d68;
@@ -371,14 +371,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=33"></script>
-<script src="comidas.js?v=33"></script>
-<script src="app.js?v=33"></script>
-<script src="salidas.js?v=33"></script>
-<script src="planes.js?v=33"></script>
-<script src="ejercicios.js?v=33"></script>
-<script src="reuniones-datos.js?v=33"></script>
-<script src="reuniones.js?v=33"></script>
+<script src="programa.js?v=34"></script>
+<script src="comidas.js?v=34"></script>
+<script src="app.js?v=34"></script>
+<script src="salidas.js?v=34"></script>
+<script src="planes.js?v=34"></script>
+<script src="ejercicios.js?v=34"></script>
+<script src="reuniones-datos.js?v=34"></script>
+<script src="reuniones.js?v=34"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -946,7 +946,7 @@ function bloqueClases(ev) {
     return `<div class="clase ${c.esMio ? 'mia' : 'otro'}">
       <div class="quien">${c.esMio ? '★ Te toca a vos' : 'Da ' + esc(c.responsable)}${
         cursada ? ' · ' + esc(cursada) : ''}</div>
-      ${c.cubreA ? '<div class="cubre">🔄 Cubre a ' + esc(c.cubreA) + ', que hoy da en FLACSO.</div>' : ''}
+      ${(c.cubreA && c.cubreA !== YO) ? '<div class="cubre">🔄 Cubre a ' + esc(c.cubreA) + ', que hoy da en FLACSO.</div>' : ''}
       <div class="tema">${esc(c.tema)}</div>
       ${c.unidad ? `<div class="meta">Unidad ${esc(c.unidad.replace('U','').replace('-',' · clase '))}</div>` : ''}
     </div>`;
