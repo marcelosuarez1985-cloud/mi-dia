@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f4f2ee">
+<meta name="theme-color" content="#0b0f1f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -12,20 +12,21 @@
 <title>Mi día — Asistente personal</title>
 <style>
   :root {
-    --fondo: #f4f2ee;
-    --tarjeta: #ffffff;
-    --texto: #262420;
-    --texto-suave: #6b6660;
-    --borde: #e7e2da;
-    --entrenamiento: #3f8f5f;
-    --docencia: #3b5fa0;
-    --reunion: #8a857f;
-    --comida: #b5722c;
-    --familia: #8b5fa8;
-    --otro: #b0aaa2;
-    --alerta: #b5432c;
-    --alerta-bg: #fbe9e3;
-    --urgente: #c2410c;
+    --fondo: #0a0e1c;
+    --tarjeta: #131a33;
+    --tarjeta-alta: #1a2247;
+    --texto: #e8ecfa;
+    --texto-suave: #8b93bd;
+    --borde: #262f57;
+    --entrenamiento: #35e0a1;
+    --docencia: #4d9fff;
+    --reunion: #8f97c4;
+    --comida: #ffb454;
+    --familia: #c792ff;
+    --otro: #5c6690;
+    --alerta: #ff5d7a;
+    --alerta-bg: #2a1420;
+    --urgente: #ff3d68;
   }
   * { box-sizing: border-box; }
   html, body { overscroll-behavior-y: contain; }
@@ -90,10 +91,10 @@
   /* Los bloques de trabajo vienen del calendario pero se ven distintos:
      no son un compromiso con otro, son tiempo tuyo reservado. */
   .evento.trabajo {
-    background: transparent; border: 1px dashed #c9c2b6; border-left: 1px dashed #c9c2b6;
+    background: transparent; border: 1px dashed #303a68; border-left: 1px dashed #303a68;
   }
   .evento.pasado        { opacity: .45; }
-  .evento.enCurso       { box-shadow: 0 0 0 2px rgba(63,143,95,.35); }
+  .evento.enCurso       { box-shadow: 0 0 0 2px rgba(53,224,161,.4), 0 0 16px rgba(53,224,161,.25); }
   .evento .hora { font-size: 13px; font-weight: 600; color: var(--texto-suave); font-variant-numeric: tabular-nums; }
   .evento .titulo { font-size: 17px; font-weight: 600; margin-top: 2px; line-height: 1.3; }
   .evento .lugar { font-size: 14px; color: var(--texto-suave); margin-top: 3px; }
@@ -104,17 +105,17 @@
   .badge {
     display: inline-block; font-size: 11.5px; font-weight: 600;
     padding: 2px 7px; border-radius: 6px; margin-left: 6px;
-    background: #e9f5ee; color: var(--entrenamiento); vertical-align: middle;
+    background: rgba(53,224,161,.15); color: var(--entrenamiento); vertical-align: middle;
   }
-  .badge.sinResp { background: #fdf0e2; color: var(--comida); }
+  .badge.sinResp { background: rgba(255,180,84,.15); color: var(--comida); }
 
   /* Bloque del programa de clases dentro de cada evento */
   .clase {
     margin-top: 9px; padding: 10px 12px; border-radius: 9px;
-    background: #f7f5f1; border: 1px solid var(--borde); font-size: 14px; line-height: 1.45;
+    background: #171e40; border: 1px solid var(--borde); font-size: 14px; line-height: 1.45;
   }
   .clase + .clase { margin-top: 6px; }
-  .clase.mia { background: #eef3fb; border-color: #c4d3ea; }
+  .clase.mia { background: rgba(77,159,255,.12); border-color: rgba(77,159,255,.4); }
   .clase .quien {
     font-size: 11.5px; font-weight: 700; letter-spacing: 0.6px;
     text-transform: uppercase; margin-bottom: 3px;
@@ -126,26 +127,26 @@
 
   /* Invitaciones que todavía no contestaste */
   .invitaciones {
-    background: #fdf6ee; border: 1px solid #ecdcc6;
+    background: rgba(255,180,84,.08); border: 1px solid rgba(255,180,84,.3);
     border-radius: 16px; padding: 15px 17px; margin-bottom: 14px;
   }
   .invitaciones .etiqueta {
     font-size: 12.5px; color: var(--comida); margin-bottom: 9px;
     text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600;
   }
-  .invita + .invita { margin-top: 11px; padding-top: 11px; border-top: 1px solid #ecdcc6; }
+  .invita + .invita { margin-top: 11px; padding-top: 11px; border-top: 1px solid rgba(255,180,84,.25); }
   .invita .que { font-size: 16px; font-weight: 600; line-height: 1.3; }
   .invita .cuando { font-size: 13.5px; color: var(--texto-suave); margin-top: 3px; }
   .invita .dequien { font-size: 13px; color: var(--texto-suave); margin-top: 2px; }
   .abrirCal {
     display: inline-block; margin-top: 12px; font-size: 13.5px; font-weight: 600;
     color: var(--comida); text-decoration: none;
-    border: 1px solid #ecdcc6; border-radius: 8px; padding: 7px 13px;
+    border: 1px solid rgba(255,180,84,.3); border-radius: 8px; padding: 7px 13px;
     background: var(--tarjeta);
   }
 
   /* Partidos y carreras. Se miran, no ocupan el día. */
-  .evento.deporte { border-left-color: #7a6ca8; background: #faf9fc; }
+  .evento.deporte { border-left-color: var(--familia); background: rgba(199,146,255,.06); }
   .depDia {
     font-size: 12.5px; font-weight: 700; color: var(--texto-suave);
     text-transform: capitalize; margin: 12px 0 5px 3px;
@@ -153,7 +154,7 @@
   .dep {
     display: flex; gap: 11px; align-items: baseline;
     background: var(--tarjeta); border: 1px solid var(--borde);
-    border-left: 4px solid #7a6ca8; border-radius: 10px;
+    border-left: 4px solid var(--familia); border-radius: 10px;
     padding: 9px 13px; margin-bottom: 6px;
   }
   .dep .depHora {
@@ -165,12 +166,12 @@
   /* Alguien cubre la clase de otro porque el titular está en FLACSO */
   .cubre {
     font-size: 12px; color: var(--texto-suave); margin-top: 5px;
-    background: #f2efe9; border-radius: 6px; padding: 4px 7px;
+    background: rgba(255,255,255,.05); border-radius: 6px; padding: 4px 7px;
   }
 
   /* Huecos convertidos en bloques de trabajo */
   .trabajo {
-    border: 1px dashed #c9c2b6; border-radius: 12px; padding: 12px 15px;
+    border: 1px dashed #303a68; border-radius: 12px; padding: 12px 15px;
     margin-bottom: 9px; background: transparent;
   }
   .trabajo .hora { font-size: 13px; font-weight: 600; color: var(--texto-suave); font-variant-numeric: tabular-nums; }
@@ -191,7 +192,7 @@
   /* Sugerencia de comida */
   .comidaSug {
     margin-top: 9px; padding: 11px 13px; border-radius: 9px;
-    background: #fdf6ee; border: 1px solid #ecdcc6; font-size: 14px; line-height: 1.45;
+    background: rgba(255,180,84,.08); border: 1px solid rgba(255,180,84,.3); font-size: 14px; line-height: 1.45;
   }
   .comidaSug .quien {
     font-size: 11.5px; font-weight: 700; letter-spacing: 0.6px;
@@ -202,7 +203,7 @@
   .comidaSug .pasos { font-size: 13px; color: var(--texto-suave); margin-top: 6px; }
   .comidaSug .otra {
     font-size: 13px; color: var(--texto-suave); margin-top: 8px;
-    padding-top: 8px; border-top: 1px solid #ecdcc6;
+    padding-top: 8px; border-top: 1px solid rgba(255,180,84,.25);
   }
 
   /* Planes B y C */
@@ -212,8 +213,8 @@
     border-radius: 8px; padding: 7px 13px; border: 1px solid var(--borde);
     background: var(--tarjeta); color: var(--texto);
   }
-  .cumplio button.si { border-color: #bcd9c7; color: var(--entrenamiento); }
-  .cumplio button.no { border-color: #e8cec5; color: var(--alerta); }
+  .cumplio button.si { border-color: rgba(53,224,161,.45); color: var(--entrenamiento); }
+  .cumplio button.no { border-color: rgba(255,93,122,.45); color: var(--alerta); }
 
   .marcado {
     margin-top: 10px; font-size: 13.5px; font-weight: 600;
@@ -232,13 +233,13 @@
   .plan {
     display: flex; gap: 11px; align-items: flex-start;
     padding: 11px 12px; border-radius: 9px; margin-bottom: 7px;
-    background: #f7f5f1; border: 1px solid var(--borde);
+    background: #171e40; border: 1px solid var(--borde);
     cursor: pointer; text-align: left; width: 100%; font: inherit;
   }
-  .plan:hover { border-color: #c9c2b6; }
+  .plan:hover { border-color: var(--docencia); }
   .plan .letra {
     flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
-    background: var(--texto); color: #fff; font-size: 13px; font-weight: 700;
+    background: var(--docencia); color: #071022; font-size: 13px; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
   }
   .plan .que { font-weight: 600; font-size: 14.5px; color: var(--texto); }
@@ -263,7 +264,7 @@
   .ejercicios a {
     display: flex; justify-content: space-between; align-items: center; gap: 10px;
     padding: 9px 12px; border-radius: 8px; margin-bottom: 5px;
-    background: #f7f5f1; border: 1px solid var(--borde);
+    background: #171e40; border: 1px solid var(--borde);
     color: var(--texto); text-decoration: none; font-size: 14px;
   }
   .ejercicios a span.play { color: var(--entrenamiento); font-size: 13px; font-weight: 600; flex-shrink: 0; }
@@ -286,7 +287,7 @@
     padding: 13px 15px; display: flex; align-items: center; gap: 12px;
     cursor: pointer; font-size: 15px;
   }
-  .reuCabecera.hayVencidos { border-color: #e8bfb2; background: #fdf4f1; }
+  .reuCabecera.hayVencidos { border-color: rgba(255,93,122,.5); background: rgba(255,93,122,.08); }
   .reuCabecera .titulo { font-weight: 600; flex: 1; }
   .reuCabecera .cuenta { font-size: 13px; color: var(--texto-suave); }
   .reuCabecera .cuenta b { color: var(--alerta); }
@@ -302,7 +303,7 @@
   }
   .tema.vencido { border-left-color: var(--alerta); }
   .tema.pronto  { border-left-color: var(--comida); }
-  .tema.falta   { border-left-color: #b0aaa2; border-style: dashed; }
+  .tema.falta   { border-left-color: var(--otro); border-style: dashed; }
   .tema.cerrado { opacity: .55; }
   .tema .nombre { font-weight: 600; color: var(--texto); }
   .tema .meta { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
@@ -314,14 +315,15 @@
 
   /* Aviso de soltar el teléfono */
   .noche {
-    background: #262420; color: #f4f2ee; border-radius: 16px;
-    padding: 18px; margin-bottom: 14px; text-align: center;
+    background: linear-gradient(135deg, #0d0221, #1a0b3d); color: var(--texto);
+    border: 1px solid rgba(199,146,255,.4); box-shadow: 0 0 24px rgba(199,146,255,.2);
+    border-radius: 16px; padding: 18px; margin-bottom: 14px; text-align: center;
   }
   .noche .grande { font-size: 19px; font-weight: 700; }
   .noche .chico { font-size: 14px; opacity: .85; margin-top: 5px; }
 
   .alerta {
-    background: var(--alerta-bg); border: 1px solid #f0cfc4; border-radius: 12px;
+    background: var(--alerta-bg); border: 1px solid rgba(255,93,122,.35); border-radius: 12px;
     padding: 12px 15px; margin-bottom: 9px; font-size: 14px;
     color: var(--alerta); line-height: 1.45;
   }
@@ -333,7 +335,7 @@
   }
   .diaSemana .nombre { width: 72px; font-weight: 600; text-transform: capitalize; flex-shrink: 0; }
   .diaSemana .contenido { color: var(--texto-suave); flex: 1; }
-  .diaSemana.hoy { border-color: #c9c2b8; background: #fffdf8; }
+  .diaSemana.hoy { border-color: var(--docencia); background: rgba(77,159,255,.08); }
 
   .estado { text-align: center; color: var(--texto-suave); padding: 40px 10px; font-size: 15px; line-height: 1.6; }
 
@@ -348,10 +350,11 @@
   }
   .boton {
     font: inherit; font-size: 15px; font-weight: 600;
-    background: var(--texto); color: #fff; border: none; border-radius: 10px;
+    background: linear-gradient(135deg, var(--docencia), #8a5cff); color: #071022;
+    border: none; border-radius: 10px; box-shadow: 0 4px 18px rgba(77,159,255,.35);
     padding: 12px 20px; cursor: pointer; width: 100%;
   }
-  .boton.secundario { background: var(--tarjeta); color: var(--texto); border: 1px solid var(--borde); font-weight: 500; }
+  .boton.secundario { background: var(--tarjeta); color: var(--texto); border: 1px solid var(--borde); font-weight: 500; box-shadow: none; }
 
   .ajustes { margin-top: 34px; display: flex; flex-direction: column; gap: 8px; }
   .ajustes .boton { font-size: 14px; padding: 10px 16px; }
@@ -368,14 +371,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=32"></script>
-<script src="comidas.js?v=32"></script>
-<script src="app.js?v=32"></script>
-<script src="salidas.js?v=32"></script>
-<script src="planes.js?v=32"></script>
-<script src="ejercicios.js?v=32"></script>
-<script src="reuniones-datos.js?v=32"></script>
-<script src="reuniones.js?v=32"></script>
+<script src="programa.js?v=33"></script>
+<script src="comidas.js?v=33"></script>
+<script src="app.js?v=33"></script>
+<script src="salidas.js?v=33"></script>
+<script src="planes.js?v=33"></script>
+<script src="ejercicios.js?v=33"></script>
+<script src="reuniones-datos.js?v=33"></script>
+<script src="reuniones.js?v=33"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
