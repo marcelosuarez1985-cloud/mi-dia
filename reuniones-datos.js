@@ -8,7 +8,7 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-09-01';
+const REUNIONES_ACTUALIZADO = '2026-09-03';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
@@ -75,9 +75,7 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Grupo de Whatsapp", tarea: "Circulo de Maestría, sumar a las personas interesadas a este grupo", responsable: "Todos", vence: "25/8/2026", propone: "Marcelo Suárez", desde: "24/8/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Clase de Mentalidad Emprendedora", tarea: "Armar para próximas ediciones una mejor venta y show al invitar a las personas", responsable: "Todos", vence: "24/8/2026", propone: "Alejandro Ortíz", desde: "24/8/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 60)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "31/8/2026", propone: "Marcelo Suárez", desde: "24/8/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Revisar planilla de finanzas", tarea: "Chequear pagos y contactar a quienes no abonaron Agosto", responsable: "Miguel Brito", vence: "26/8/2026", propone: "Miguel Brito", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Planificar clase 29 (Digital multiformatos)", tarea: "Diseñar clase con herramientas de la IA enfocados al diseño de negocio.", responsable: "Marcelo Suárez", vence: "12/10/2026", propone: "Marcelo Suárez", desde: "26/8/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Diseñar Campaña para Octubre", tarea: "Se habló de utilizar el Social Funnel para el Postítulo de Coach de Equipos.", responsable: "Alejandro Ortíz", vence: "26/8/2026", propone: "Alejandro Ortíz", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Postítulo 2027 (Venta)", tarea: "Contactar a personas interesadas para el postitulo", responsable: "Miguel Brito", vence: "31/10/2026", propone: "Miguel Brito", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Armar grupo de Ws. personas que asistieron el 24/08 Mentalidad emprendedora", tarea: "Enviar invitacion del grupo Maestria GIGNiT, a los presentes.", responsable: "Miguel Brito", vence: "31/8/2026", propone: "Miguel Brito", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Conferencia en el Mamapalooza", tarea: "El 22 de septiembre Ale realizará una conferencia. Es una oportunidad para que el equipo GIGNiT esté presente como sponsor. Tener en cuenta para preparar el stand, actividades y folletería.", responsable: "Todos", vence: "22/9/2026", propone: "Alejandro Ortíz", desde: "22/7/2026" },
