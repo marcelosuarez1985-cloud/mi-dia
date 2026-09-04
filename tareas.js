@@ -11,22 +11,32 @@
 //  a aparecer. Lo que está hecho, está hecho: nunca se rearma como pendiente.
 // ═══════════════════════════════════════════════════════════
 
+// Dominios de la vida: cada tarea pertenece a uno. Lo de Canva es siempre Laboral.
+const DOMINIOS = {
+  Laboral:  '💼',
+  Hogar:    '🏠',
+  Familia:  '👨‍👩‍👧',
+  Salud:    '🩺',
+  Personal: '🙂',
+};
+const DOMINIO_POR_DEFECTO = 'Personal';
+
 // Las que Marce me dicta. Fechas d/m/aaaa. Cuando me diga que está hecha,
 // se saca de acá (no se marca: se borra).
 const TAREAS_MARCE = [
-  { id: 'obra-social',        texto: 'Llamar a la obra social para darte de alta de nuevo',
+  { id: 'obra-social',        dominio: 'Salud',   texto: 'Llamar a la obra social para darte de alta de nuevo',
     vence: '4/9/2026',  nota: 'Si se puede, hoy mismo.' },
-  { id: 'pago-delfos',        texto: 'Pagar a la sede de Delfos',
+  { id: 'pago-delfos',        dominio: 'Laboral', texto: 'Pagar a la sede de Delfos',
     vence: '5/9/2026',  nota: 'Tiene que estar liquidado antes del lunes.' },
-  { id: 'feedback-videos',    texto: 'Dar feedback a los estudiantes por los videos de sus sesiones',
+  { id: 'feedback-videos',    dominio: 'Laboral', texto: 'Dar feedback a los estudiantes por los videos de sus sesiones',
     vence: '5/9/2026',  nota: 'Antes del domingo.' },
-  { id: 'devolucion-guias',   texto: 'Devolver las guías que entregaron los de primer año',
+  { id: 'devolucion-guias',   dominio: 'Laboral', texto: 'Devolver las guías que entregaron los de primer año',
     vence: '5/9/2026',  nota: 'Antes del domingo.' },
-  { id: 'pago-villa-parque',  texto: 'Pagar a Villa del Parque',
+  { id: 'pago-villa-parque',  dominio: 'Laboral', texto: 'Pagar a Villa del Parque',
     vence: '9/9/2026',  nota: 'El miércoles que viene.' },
-  { id: 'compras-mes',        texto: 'Compras del mes, con el presupuesto de $400.000',
+  { id: 'compras-mes',        dominio: 'Hogar',   texto: 'Compras del mes, con el presupuesto de $400.000',
     vence: '13/9/2026', nota: 'Este domingo no: hasta el domingo 13.' },
-  { id: 'presentacion-22',    texto: 'Presentación del 22 de septiembre: diseño e impresión',
+  { id: 'presentacion-22',    dominio: 'Laboral', texto: 'Presentación del 22 de septiembre: diseño e impresión',
     vence: '22/9/2026', nota: 'Primero el diseño, después la imprenta. No dejarlo para el final.' },
 ];
 
@@ -35,13 +45,14 @@ const Tareas = {
   propias() { return Guardado.leer('tareasPropias', []); },
   hechas()  { return Guardado.leer('tareasHechas', {}); },
 
-  agregar(texto, venceISO) {
+  agregar(texto, venceISO, dominio) {
     texto = (texto || '').trim();
     if (!texto) return false;
     const lista = this.propias();
     // aaaa-mm-dd (lo que da el selector de fecha) → d/m/aaaa (como el resto de la app)
     const vence = venceISO ? venceISO.split('-').reverse().map(Number).join('/') : '';
-    lista.push({ id: String(Date.now()), texto, vence });
+    if (!DOMINIOS[dominio]) dominio = DOMINIO_POR_DEFECTO;
+    lista.push({ id: String(Date.now()), texto, vence, dominio });
     Guardado.escribir('tareasPropias', lista);
     return true;
   },
@@ -74,17 +85,19 @@ function listaDeTareas(hoyClave) {
       todas.push({
         id: 'canva:' + t.reunion + ':' + t.tema + ':' + t.tarea,
         texto: t.tema, nota: t.tarea, vence: t.vence, dias: t.dias,
-        origen: t.reunion, deTodos: /todos/i.test(t.responsable)
+        origen: t.reunion, deTodos: /todos/i.test(t.responsable), dominio: 'Laboral'
       });
     }
   }
   for (const t of TAREAS_MARCE) {
     todas.push({ id: 'marce:' + t.id, texto: t.texto, nota: t.nota || '', vence: t.vence,
-                 dias: diasHasta(t.vence, hoyClave), origen: 'Tuya' });
+                 dias: diasHasta(t.vence, hoyClave), origen: 'Tuya',
+                 dominio: DOMINIOS[t.dominio] ? t.dominio : DOMINIO_POR_DEFECTO });
   }
   for (const t of Tareas.propias()) {
     todas.push({ id: 'tel:' + t.id, texto: t.texto, nota: '', vence: t.vence,
-                 dias: diasHasta(t.vence, hoyClave), origen: 'Tuya', delTelefono: true });
+                 dias: diasHasta(t.vence, hoyClave), origen: 'Tuya', delTelefono: true,
+                 dominio: DOMINIOS[t.dominio] ? t.dominio : DOMINIO_POR_DEFECTO });
   }
 
   const prioridad = t => (t.dias === null || t.dias === undefined) ? 9999 : t.dias;
