@@ -33,16 +33,31 @@
   body {
     margin: 0;
     font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--fondo);
     color: var(--texto);
     padding: max(20px, env(safe-area-inset-top)) 16px 60px;
     -webkit-font-smoothing: antialiased;
+    /* Brillos de color en las esquinas y una grilla tenue, estilo futurista */
+    background-color: var(--fondo);
+    background-image:
+      radial-gradient(circle at 10% -5%, rgba(77,159,255,.26), transparent 42%),
+      radial-gradient(circle at 92% 12%, rgba(199,146,255,.20), transparent 40%),
+      radial-gradient(circle at 50% 108%, rgba(53,224,161,.12), transparent 45%),
+      linear-gradient(rgba(77,159,255,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77,159,255,.055) 1px, transparent 1px);
+    background-size: auto, auto, auto, 34px 34px, 34px 34px;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
   }
   .contenedor { max-width: 580px; margin: 0 auto; }
 
   header { margin-bottom: 18px; }
   .fecha { font-size: 15px; color: var(--texto-suave); text-transform: capitalize; }
-  h1 { font-size: 27px; margin: 3px 0 0; letter-spacing: -0.3px; }
+  h1 {
+    font-size: 27px; margin: 3px 0 0; letter-spacing: -0.3px;
+    background: linear-gradient(90deg, var(--texto) 0%, var(--docencia) 55%, var(--familia) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 26px rgba(77,159,255,.35);
+    display: inline-block;
+  }
 
   h2 {
     font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px;
@@ -50,8 +65,9 @@
   }
 
   .destacado {
-    background: var(--tarjeta); border: 1px solid var(--borde);
+    background: var(--tarjeta); border: 1px solid rgba(77,159,255,.35);
     border-radius: 16px; padding: 16px 18px; margin-bottom: 8px;
+    box-shadow: 0 0 22px rgba(77,159,255,.18), inset 0 1px 0 rgba(255,255,255,.05);
   }
   .destacado .etiqueta { font-size: 12.5px; color: var(--texto-suave); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.6px; }
   .destacado .titulo { font-size: 19px; font-weight: 600; line-height: 1.25; }
@@ -59,9 +75,10 @@
 
   /* Aviso de salida — el que insiste */
   .aviso {
-    background: var(--urgente); color: #fff;
+    background: linear-gradient(135deg, var(--urgente), #ff7a3d); color: #fff;
     border-radius: 16px; padding: 18px;
     margin-bottom: 14px; text-align: center;
+    box-shadow: 0 0 30px rgba(255,61,104,.45);
     animation: latir 1.6s ease-in-out infinite;
   }
   .aviso .grande { font-size: 22px; font-weight: 700; line-height: 1.2; }
@@ -83,11 +100,12 @@
     border-left: 5px solid var(--otro); border-radius: 12px;
     padding: 13px 15px; margin-bottom: 9px;
   }
-  .evento.entrenamiento { border-left-color: var(--entrenamiento); }
-  .evento.docencia      { border-left-color: var(--docencia); }
-  .evento.reunion       { border-left-color: var(--reunion); }
-  .evento.comida        { border-left-color: var(--comida); }
-  .evento.familia       { border-left-color: var(--familia); }
+  /* Cada categoría tiene su color, y un resplandor tenue que sale del borde */
+  .evento.entrenamiento { border-left-color: var(--entrenamiento); box-shadow: inset 4px 0 14px -8px var(--entrenamiento); }
+  .evento.docencia      { border-left-color: var(--docencia);      box-shadow: inset 4px 0 14px -8px var(--docencia); }
+  .evento.reunion       { border-left-color: var(--reunion);       box-shadow: inset 4px 0 14px -8px var(--reunion); }
+  .evento.comida        { border-left-color: var(--comida);        box-shadow: inset 4px 0 14px -8px var(--comida); }
+  .evento.familia       { border-left-color: var(--familia);       box-shadow: inset 4px 0 14px -8px var(--familia); }
   /* Los bloques de trabajo vienen del calendario pero se ven distintos:
      no son un compromiso con otro, son tiempo tuyo reservado. */
   .evento.trabajo {
@@ -106,8 +124,9 @@
     display: inline-block; font-size: 11.5px; font-weight: 600;
     padding: 2px 7px; border-radius: 6px; margin-left: 6px;
     background: rgba(53,224,161,.15); color: var(--entrenamiento); vertical-align: middle;
+    box-shadow: 0 0 10px rgba(53,224,161,.35);
   }
-  .badge.sinResp { background: rgba(255,180,84,.15); color: var(--comida); }
+  .badge.sinResp { background: rgba(255,180,84,.15); color: var(--comida); box-shadow: 0 0 10px rgba(255,180,84,.35); }
 
   /* Bloque del programa de clases dentro de cada evento */
   .clase {
@@ -156,6 +175,7 @@
     background: var(--tarjeta); border: 1px solid var(--borde);
     border-left: 4px solid var(--familia); border-radius: 10px;
     padding: 9px 13px; margin-bottom: 6px;
+    box-shadow: inset 4px 0 14px -8px var(--familia);
   }
   .dep .depHora {
     font-size: 13.5px; font-weight: 700; color: var(--texto-suave);
@@ -184,6 +204,7 @@
     background: var(--tarjeta); border: 1px solid var(--borde);
     border-left: 5px solid var(--docencia); border-radius: 12px;
     padding: 12px 15px; margin-bottom: 9px; opacity: .8;
+    box-shadow: inset 4px 0 14px -8px var(--docencia);
   }
   .otraSede .hora { font-size: 13px; font-weight: 600; color: var(--texto-suave); }
   .otraSede .titulo { font-size: 15.5px; font-weight: 600; margin-top: 2px; }
@@ -287,7 +308,7 @@
     padding: 13px 15px; display: flex; align-items: center; gap: 12px;
     cursor: pointer; font-size: 15px;
   }
-  .reuCabecera.hayVencidos { border-color: rgba(255,93,122,.5); background: rgba(255,93,122,.08); }
+  .reuCabecera.hayVencidos { border-color: rgba(255,93,122,.5); background: rgba(255,93,122,.08); box-shadow: 0 0 16px rgba(255,93,122,.25); }
   .reuCabecera .titulo { font-weight: 600; flex: 1; }
   .reuCabecera .cuenta { font-size: 13px; color: var(--texto-suave); }
   .reuCabecera .cuenta b { color: var(--alerta); }
@@ -301,8 +322,8 @@
     border-left: 4px solid var(--otro); border-radius: 10px;
     padding: 11px 13px; margin-bottom: 6px; font-size: 14px; line-height: 1.4;
   }
-  .tema.vencido { border-left-color: var(--alerta); }
-  .tema.pronto  { border-left-color: var(--comida); }
+  .tema.vencido { border-left-color: var(--alerta); box-shadow: inset 4px 0 14px -8px var(--alerta); }
+  .tema.pronto  { border-left-color: var(--comida); box-shadow: inset 4px 0 14px -8px var(--comida); }
   .tema.falta   { border-left-color: var(--otro); border-style: dashed; }
   .tema.cerrado { opacity: .55; }
   .tema .nombre { font-weight: 600; color: var(--texto); }
@@ -335,12 +356,15 @@
   }
   .diaSemana .nombre { width: 72px; font-weight: 600; text-transform: capitalize; flex-shrink: 0; }
   .diaSemana .contenido { color: var(--texto-suave); flex: 1; }
-  .diaSemana.hoy { border-color: var(--docencia); background: rgba(77,159,255,.08); }
+  .diaSemana.hoy { border-color: var(--docencia); background: rgba(77,159,255,.08); box-shadow: 0 0 16px rgba(77,159,255,.25); }
 
   .estado { text-align: center; color: var(--texto-suave); padding: 40px 10px; font-size: 15px; line-height: 1.6; }
 
   /* Pantalla de configuración inicial */
-  .setup { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 16px; padding: 22px; }
+  .setup {
+    background: var(--tarjeta); border: 1px solid rgba(77,159,255,.35); border-radius: 16px; padding: 22px;
+    box-shadow: 0 0 22px rgba(77,159,255,.18), inset 0 1px 0 rgba(255,255,255,.05);
+  }
   .setup h3 { margin: 0 0 10px; font-size: 19px; }
   .setup p { font-size: 14.5px; color: var(--texto-suave); line-height: 1.55; margin: 0 0 14px; }
   .setup input {
@@ -351,7 +375,8 @@
   .boton {
     font: inherit; font-size: 15px; font-weight: 600;
     background: linear-gradient(135deg, var(--docencia), #8a5cff); color: #071022;
-    border: none; border-radius: 10px; box-shadow: 0 4px 18px rgba(77,159,255,.35);
+    border: none; border-radius: 10px;
+    box-shadow: 0 4px 22px rgba(77,159,255,.45), 0 0 0 1px rgba(138,92,255,.35);
     padding: 12px 20px; cursor: pointer; width: 100%;
   }
   .boton.secundario { background: var(--tarjeta); color: var(--texto); border: 1px solid var(--borde); font-weight: 500; box-shadow: none; }
@@ -371,14 +396,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=34"></script>
-<script src="comidas.js?v=34"></script>
-<script src="app.js?v=34"></script>
-<script src="salidas.js?v=34"></script>
-<script src="planes.js?v=34"></script>
-<script src="ejercicios.js?v=34"></script>
-<script src="reuniones-datos.js?v=34"></script>
-<script src="reuniones.js?v=34"></script>
+<script src="programa.js?v=35"></script>
+<script src="comidas.js?v=35"></script>
+<script src="app.js?v=35"></script>
+<script src="salidas.js?v=35"></script>
+<script src="planes.js?v=35"></script>
+<script src="ejercicios.js?v=35"></script>
+<script src="reuniones-datos.js?v=35"></script>
+<script src="reuniones.js?v=35"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
