@@ -202,6 +202,45 @@
   .trabajo .nota { font-size: 13px; color: var(--texto-suave); margin-top: 3px; }
   .trabajo.pasado { opacity: .4; }
 
+  /* Tareas repartidas dentro de un bloque de trabajo */
+  .enBloque { margin-top: 9px; padding-top: 8px; border-top: 1px dashed var(--borde); font-size: 13.5px; }
+  .enBloque .cabeza { color: var(--mio); font-weight: 700; font-size: 12px; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px; }
+  .enBloque .item { display: flex; gap: 7px; margin-top: 4px; line-height: 1.35; }
+  .enBloque .item .n { color: var(--mio); font-weight: 700; flex: none; }
+  .enBloque .rojo { color: var(--alerta); }
+
+  /* Tareas de la semana */
+  .agregarTarea { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px; }
+  .agregarTarea input {
+    background: var(--tarjeta); color: var(--texto); border: 1px solid var(--borde);
+    border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit;
+  }
+  .agregarTarea input[type=text] { flex: 1 1 200px; min-width: 0; }
+  .agregarTarea input[type=date] { flex: 0 0 auto; color-scheme: dark; }
+  .agregarTarea .boton { font-size: 14px; padding: 10px 16px; flex: 0 0 auto; }
+  .tareasResumen { font-size: 13px; color: var(--texto-suave); margin: 0 0 8px 4px; }
+  .tareasResumen b { color: var(--alerta); }
+  .tarea {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--mio-bg); border: 1px solid var(--mio); border-left-width: 4px;
+    border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; font-size: 14px; line-height: 1.4;
+  }
+  .tarea.vencida { border-left-color: var(--alerta); box-shadow: inset 4px 0 14px -8px var(--alerta); }
+  .tarea.pronto  { border-left-color: var(--comida); }
+  .tarea.hecha   { background: var(--tarjeta); border-color: var(--borde); opacity: .6; }
+  .tarea .check {
+    width: 24px; height: 24px; flex: none; border-radius: 7px; margin-top: 1px;
+    border: 2px solid var(--mio); cursor: pointer; text-align: center; line-height: 20px;
+    font-weight: 800; color: #1a1400;
+  }
+  .tarea.hecha .check { background: var(--entrenamiento); border-color: var(--entrenamiento); }
+  .tarea .cuerpo { flex: 1; min-width: 0; }
+  .tarea .texto { font-weight: 600; color: #fff3c4; }
+  .tarea.hecha .texto { color: var(--texto-suave); text-decoration: line-through; }
+  .tarea .meta { font-size: 12.5px; color: var(--texto-suave); margin-top: 2px; }
+  .tarea .nota { font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; }
+  .hechas { font-size: 13px; color: var(--texto-suave); margin: 10px 0 6px 4px; cursor: pointer; font-weight: 600; }
+
   /* Clases de otras sedes, sólo informativas */
   .otraSede {
     background: var(--tarjeta); border: 1px solid var(--borde);
@@ -412,14 +451,15 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=39"></script>
-<script src="comidas.js?v=39"></script>
-<script src="app.js?v=39"></script>
-<script src="salidas.js?v=39"></script>
-<script src="planes.js?v=39"></script>
-<script src="ejercicios.js?v=39"></script>
-<script src="reuniones-datos.js?v=39"></script>
-<script src="reuniones.js?v=39"></script>
+<script src="programa.js?v=40"></script>
+<script src="comidas.js?v=40"></script>
+<script src="app.js?v=40"></script>
+<script src="salidas.js?v=40"></script>
+<script src="planes.js?v=40"></script>
+<script src="ejercicios.js?v=40"></script>
+<script src="reuniones-datos.js?v=40"></script>
+<script src="reuniones.js?v=40"></script>
+<script src="tareas.js?v=40"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -611,13 +651,21 @@ function dibujar(sinConexion) {
     // El día se arma intercalando eventos, huecos de trabajo y clases de otras sedes,
     // todo ordenado por hora para que se lea de corrido.
     const piezas = [];
-    for (const b of bloquesDeTrabajo(deHoy)) {
+    // Las tareas pendientes de hoy, ya ordenadas por prioridad, para repartirlas
+    // entre los bloques de trabajo (los calculados y los que vienen del calendario).
+    if (typeof listaDeTareas === 'function') {
+      TAREAS_HOY_CLAVE = hoy.clave;
+      TAREAS_HOY = listaDeTareas(hoy.clave).pendientes;
+    }
+    const huecos = bloquesDeTrabajo(deHoy);
+    huecos.forEach((b, i) => {
       piezas.push({ orden: b.minIni, html: `<div class="trabajo ${hoy.minutos > b.minFin ? 'pasado' : ''}">
         <div class="hora">${b.desde} – ${b.hasta}</div>
         <div class="titulo">🗂️ Bloque de trabajo</div>
         <div class="nota">${duracionTexto(b.minutos)} libres. Preparación de clases, armado de curso, devoluciones.</div>
+        ${htmlTareasDeBloque(i, huecos.length)}
       </div>` });
-    }
+    });
     for (const c of clasesInformativas(deHoy, hoy.clave)) {
       const [h] = c.sede.hora.split('–');
       const min = Number(h.slice(0,2)) * 60 + Number(h.slice(3,5));
@@ -680,7 +728,8 @@ function dibujar(sinConexion) {
     </div>`);
   }
 
-  // ── Temas de reunión ──
+  // ── Tareas, deportes y temas de reunión ──
+  html.push(bloqueTareas(hoy));
   html.push(bloqueDeportes(hoy));
   html.push(bloqueReuniones(hoy));
 
@@ -741,7 +790,82 @@ function tarjeta(ev, ahora, evsDelDia) {
     ${bloqueComida(ev)}
     ${bloqueCumplimiento(ev, ahora, evsDelDia || [])}
     ${bloqueEjercicios(ev)}
+    ${bloqueTareasEnEvento(ev, evsDelDia || [])}
   </div>`;
+}
+
+// ───────── Tareas de la semana ─────────
+let TAREAS_HOY = [];            // pendientes de hoy, ordenadas por prioridad
+let TAREAS_HOY_CLAVE = null;    // el día para el que se calcularon
+let TAREAS_HECHAS_ABIERTO = false;
+const TAREA_BORRADOR = { texto: '', fecha: '' };   // lo que está escribiendo; sobrevive al redibujado
+
+// Un bloque de trabajo que viene del calendario: le tocan las tareas según
+// qué número de bloque es en el día.
+function bloqueTareasEnEvento(ev, evsDelDia) {
+  if (ev.tipo !== 'trabajo' || ev.todoElDia) return '';
+  const bloques = evsDelDia.filter(e => e.tipo === 'trabajo' && !e.todoElDia)
+                           .sort((a, b) => a.minIni - b.minIni);
+  return htmlTareasDeBloque(bloques.indexOf(ev), bloques.length);
+}
+
+function htmlTareasDeBloque(indice, total) {
+  if (typeof tareasParaBloque !== 'function' || !TAREAS_HOY.length) return '';
+  const lista = tareasParaBloque(TAREAS_HOY, indice, total);
+  if (!lista.length) return '<div class="enBloque"><div class="cabeza">📝 Seguí con lo que quedó de los bloques anteriores</div></div>';
+  const aviso = t => t.dias === null || t.dias === undefined ? ''
+    : t.dias < 0 ? ' <b class="rojo">(vencida)</b>' : t.dias === 0 ? ' <b class="rojo">(vence hoy)</b>' : '';
+  return `<div class="enBloque"><div class="cabeza">📝 Para este bloque, en orden</div>${
+    lista.map((t, i) => `<div class="item"><span class="n">${i + 1}.</span><span>${esc(t.texto)}${aviso(t)}</span></div>`).join('')
+  }</div>`;
+}
+
+function tareaHecha(id)    { Tareas.marcar(id, TAREAS_HOY_CLAVE); dibujar(); }
+function tareaDeshacer(id) { Tareas.desmarcar(id); dibujar(); }
+function verHechas()       { TAREAS_HECHAS_ABIERTO = !TAREAS_HECHAS_ABIERTO; dibujar(); }
+function agregarTareaDesdePantalla() {
+  if (!Tareas.agregar(TAREA_BORRADOR.texto, TAREA_BORRADOR.fecha)) return;
+  TAREA_BORRADOR.texto = ''; TAREA_BORRADOR.fecha = '';
+  dibujar();
+}
+
+function tarjetaTarea(t, hecha) {
+  const d = (t.dias === null || t.dias === undefined) ? null : t.dias;
+  const clase = hecha ? 'hecha' : d !== null && d < 0 ? 'vencida' : d !== null && d <= 2 ? 'pronto' : '';
+  const plazo = d === null ? (t.vence ? esc(t.vence) : 'sin fecha') : plazoTexto(d);
+  const origen = t.origen !== 'Tuya' ? `📋 ${esc(t.origen)}${t.deTodos ? ' · de todos' : ''}`
+    : t.delTelefono ? 'la cargaste vos' : 'me la dictaste';
+  const accion = hecha ? 'tareaDeshacer' : 'tareaHecha';
+  return `<div class="tarea ${clase}">
+    <div class="check" data-id="${esc(t.id)}" onclick="${accion}(this.dataset.id)">${hecha ? '✓' : ''}</div>
+    <div class="cuerpo">
+      <div class="texto">${esc(t.texto)}</div>
+      <div class="meta">${plazo} · ${origen}${hecha ? ' · hecha el ' + esc(t.hechaEl) : ''}</div>
+      ${t.nota && !hecha ? `<div class="nota">${esc(t.nota)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function bloqueTareas(hoy) {
+  if (typeof listaDeTareas !== 'function') return '';
+  const { pendientes, hechas } = listaDeTareas(hoy.clave);
+  const vencidas = pendientes.filter(t => t.dias !== null && t.dias !== undefined && t.dias < 0).length;
+
+  let h = '<h2>Tareas de la semana</h2>';
+  h += `<div class="agregarTarea">
+    <input type="text" placeholder="Nueva tarea…" value="${esc(TAREA_BORRADOR.texto)}"
+           oninput="TAREA_BORRADOR.texto = this.value" onkeydown="if (event.key === 'Enter') agregarTareaDesdePantalla()">
+    <input type="date" value="${esc(TAREA_BORRADOR.fecha)}" oninput="TAREA_BORRADOR.fecha = this.value">
+    <button class="boton" onclick="agregarTareaDesdePantalla()">Agregar</button>
+  </div>`;
+  h += `<div class="tareasResumen">${pendientes.length ? `${pendientes.length} pendientes` : 'Nada pendiente 🎉'}${
+    vencidas ? ` · <b>${vencidas} ${vencidas === 1 ? 'vencida' : 'vencidas'}</b>` : ''} · en orden de prioridad</div>`;
+  for (const t of pendientes) h += tarjetaTarea(t, false);
+  if (hechas.length) {
+    h += `<div class="hechas" onclick="verHechas()">✅ Hechas (${hechas.length}) ${TAREAS_HECHAS_ABIERTO ? '▲' : '▼'}</div>`;
+    if (TAREAS_HECHAS_ABIERTO) for (const t of hechas) h += tarjetaTarea(t, true);
+  }
+  return h;
 }
 
 // ───────── Deportes ─────────
