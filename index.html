@@ -30,8 +30,9 @@
   }
   * { box-sizing: border-box; }
   html, body { overscroll-behavior-y: contain; }
+  html { background: var(--fondo); }
   body {
-    margin: 0;
+    margin: 0; min-height: 100vh;
     font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
     color: var(--texto);
     padding: max(20px, env(safe-area-inset-top)) 16px 60px;
@@ -396,14 +397,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=35"></script>
-<script src="comidas.js?v=35"></script>
-<script src="app.js?v=35"></script>
-<script src="salidas.js?v=35"></script>
-<script src="planes.js?v=35"></script>
-<script src="ejercicios.js?v=35"></script>
-<script src="reuniones-datos.js?v=35"></script>
-<script src="reuniones.js?v=35"></script>
+<script src="programa.js?v=36"></script>
+<script src="comidas.js?v=36"></script>
+<script src="app.js?v=36"></script>
+<script src="salidas.js?v=36"></script>
+<script src="planes.js?v=36"></script>
+<script src="ejercicios.js?v=36"></script>
+<script src="reuniones-datos.js?v=36"></script>
+<script src="reuniones.js?v=36"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
