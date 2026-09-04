@@ -27,6 +27,8 @@
     --alerta: #ff5d7a;
     --alerta-bg: #2a1420;
     --urgente: #ff3d68;
+    --mio: #ffd23f;          /* dorado: temas que tiene que cumplir Marce */
+    --mio-bg: #2b2410;
   }
   * { box-sizing: border-box; }
   html, body { overscroll-behavior-y: contain; }
@@ -323,6 +325,19 @@
     border-left: 4px solid var(--otro); border-radius: 10px;
     padding: 11px 13px; margin-bottom: 6px; font-size: 14px; line-height: 1.4;
   }
+  /* Los temas de Marce (responsable él o "Todos") van en dorado, bien visibles.
+     Va antes de vencido/pronto para que el borde izquierdo rojo o naranja se siga viendo. */
+  .tema.mio {
+    background: var(--mio-bg); border-color: var(--mio);
+    box-shadow: 0 0 14px -4px rgba(255,210,63,.55);
+  }
+  .tema.mio .nombre { color: #fff3c4; }
+  .tema .tuyo {
+    display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .5px;
+    text-transform: uppercase; color: #1a1400; background: var(--mio);
+    border-radius: 6px; padding: 1px 7px; margin-right: 6px; vertical-align: 1px;
+  }
+  .reuCabecera .cuenta .tuyos { color: var(--mio); font-weight: 700; }
   .tema.vencido { border-left-color: var(--alerta); box-shadow: inset 4px 0 14px -8px var(--alerta); }
   .tema.pronto  { border-left-color: var(--comida); box-shadow: inset 4px 0 14px -8px var(--comida); }
   .tema.falta   { border-left-color: var(--otro); border-style: dashed; }
@@ -397,14 +412,14 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=38"></script>
-<script src="comidas.js?v=38"></script>
-<script src="app.js?v=38"></script>
-<script src="salidas.js?v=38"></script>
-<script src="planes.js?v=38"></script>
-<script src="ejercicios.js?v=38"></script>
-<script src="reuniones-datos.js?v=38"></script>
-<script src="reuniones.js?v=38"></script>
+<script src="programa.js?v=39"></script>
+<script src="comidas.js?v=39"></script>
+<script src="app.js?v=39"></script>
+<script src="salidas.js?v=39"></script>
+<script src="planes.js?v=39"></script>
+<script src="ejercicios.js?v=39"></script>
+<script src="reuniones-datos.js?v=39"></script>
+<script src="reuniones.js?v=39"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -790,9 +805,12 @@ function plazoTexto(dias) {
 }
 
 function tarjetaTema(t, clase) {
-  return `<div class="tema ${clase}">
+  // Resaltado dorado sólo si el tema es de Marce y todavía está abierto.
+  const mio = t.mio && clase !== 'cerrado';
+  const etiqueta = !mio ? '' : /todos/i.test(t.responsable) ? '🫵 de todos' : '🫵 tuyo';
+  return `<div class="tema ${clase} ${mio ? 'mio' : ''}">
     <div class="nombre">${esc(t.estado || '⬜')} ${esc(t.tema)}</div>
-    <div class="meta">${esc(t.responsable || 'sin responsable')}${
+    <div class="meta">${mio ? `<span class="tuyo">${etiqueta}</span>` : ''}${esc(t.responsable || 'sin responsable')}${
       t.vence ? ' · ' + plazoTexto(t.dias) : ''}</div>
     ${t.faltas ? `<div class="falta1">⚠️ ${esc(t.faltas.join(' · '))}</div>` : ''}
     ${t.tarea ? `<div class="detalle">${esc(t.tarea)}</div>` : ''}
@@ -810,6 +828,7 @@ function bloqueReuniones(hoy) {
     if (r.vencidos) partes.push(`<b>${r.vencidos} vencidos</b>`);
     if (r.porVencer) partes.push(`${r.porVencer} por vencer`);
     if (r.faltaCompletar) partes.push(`${r.faltaCompletar} incompletos`);
+    if (r.mios) partes.push(`<span class="tuyos">🫵 ${r.mios} ${r.mios === 1 ? 'tuyo' : 'tuyos'}</span>`);
 
     h += `<div class="reuCabecera ${r.vencidos ? 'hayVencidos' : ''}"
             onclick="verReuniones('${esc(nombre)}')">

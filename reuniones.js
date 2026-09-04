@@ -30,6 +30,11 @@ const CERRADO = /Listo|Descartado/;
 // Los temas recurrentes no tienen una fecha límite real: no se evalúan por fecha.
 const RECURRENTE = /Recurrente/;
 
+// Un tema es de Marce si él es el responsable, o si el responsable es "Todos"
+// (ahí él es el responsable de que se cumpla). Se resalta en la app.
+const MIO = /marcelo|todos/i;
+function esMio(t) { return MIO.test(t.responsable || ''); }
+
 // Agrupa los temas por urgencia. Cada tema aparece una sola vez,
 // en el primer grupo que le corresponde.
 function temasPorUrgencia(hoyClave, reunion) {
@@ -39,7 +44,7 @@ function temasPorUrgencia(hoyClave, reunion) {
     const cerrado = CERRADO.test(t.estado);
     const recurrente = RECURRENTE.test(t.estado);
     const dias = recurrente ? null : diasHasta(t.vence, hoyClave);
-    const item = Object.assign({}, t, { dias });
+    const item = Object.assign({}, t, { dias, mio: esMio(t) });
 
     if (cerrado) { g.cerrados.push(item); continue; }
     if (!recurrente && dias !== null && dias < 0)  { g.vencidos.push(item); continue; }
@@ -60,7 +65,10 @@ function temasPorUrgencia(hoyClave, reunion) {
 
 function resumenReuniones(hoyClave, reunion) {
   const g = temasPorUrgencia(hoyClave, reunion);
+  // Pendientes de Marce: todo lo que no está cerrado y es suyo o de "Todos".
+  const abiertos = [].concat(g.vencidos, g.porVencer, g.faltaCompletar, g.enMarcha);
   return { vencidos: g.vencidos.length, porVencer: g.porVencer.length,
            faltaCompletar: g.faltaCompletar.length, enMarcha: g.enMarcha.length,
-           cerrados: g.cerrados.length };
+           cerrados: g.cerrados.length,
+           mios: abiertos.filter(t => t.mio).length };
 }
