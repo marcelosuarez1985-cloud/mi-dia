@@ -8,7 +8,7 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-09-04';
+const REUNIONES_ACTUALIZADO = '2026-09-05';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
@@ -50,7 +50,7 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Armar grupo de Ws. personas que asistieron el 24/08 Mentalidad emprendedora", tarea: "Enviar invitacion del grupo Maestria GIGNiT, a los presentes.", responsable: "Miguel Brito", vence: "31/8/2026", propone: "Miguel Brito", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Cobranzas", tarea: "Armar para el 2027 un sistema de cobranza automatico", responsable: "Marcelo Suárez", vence: "2/9/2026", propone: "Alejandro Ortíz", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 61)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "2/9/2026", propone: "Marcelo Suárez", desde: "31/8/2026" },
-  { reunion: "GIGNiT", estado: "", tema: "Libro de Acta (N° 62)", tarea: "Leerlo", responsable: "", vence: "", propone: "Marcelo Suárez", desde: "2/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 62)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "9/9/2026", propone: "Marcelo Suárez", desde: "2/9/2026" },
   { reunion: "GIGNiT", estado: "🚮Descartado", tema: "Estrategía de enrolamiento", tarea: "Armar la campaña para obtener el Ebook, video, minicurso para el postítulo", responsable: "Alejandro Ortíz", vence: "31/8/2026", propone: "Alejandro Ortíz", desde: "4/3/2026" },
   { reunion: "GIGNiT", estado: "🚮Descartado", tema: "CRM", tarea: "Investigar un software de seguimiento de clientes", responsable: "Alejandro Ortíz", vence: "31/8/2026", propone: "Alejandro Ortíz", desde: "2/3/2026" },
   { reunion: "GIGNiT", estado: "🚮Descartado", tema: "Reel de Ventas", tarea: "Adaptar guion, grabar y publicar Reel en Redes y contactos.", responsable: "Miguel Brito", vence: "31/8/2026", propone: "Miguel Brito", desde: "28/5/2026" },
@@ -72,5 +72,5 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Planificar clase 29 (Digital multiformatos)", tarea: "Diseñar clase con herramientas de la IA enfocados al diseño de negocio.", responsable: "Marcelo Suárez", vence: "12/10/2026", propone: "Marcelo Suárez", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Postítulo 2027 (Venta)", tarea: "Contactar a personas interesadas para el postitulo", responsable: "Miguel Brito", vence: "31/10/2026", propone: "Miguel Brito", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Generar videos para campaña Postitulo 2027", tarea: "Hay 2 videos centrales que preparar: Video anzuelo que resuelve un problema e invita al postítulo. Video que explica de punta a punta el “cómo” del Postítulo.", responsable: "Alejandro Ortíz", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "2/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 62)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "9/9/2026", propone: "Marcelo Suárez", desde: "2/9/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Acta (N° 63)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "11/9/2026", propone: "Marcelo Suárez", desde: "4/9/2026" },
 ];
