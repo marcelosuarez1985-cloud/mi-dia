@@ -8,7 +8,7 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-09-08';
+const REUNIONES_ACTUALIZADO = '2026-09-09';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
@@ -55,8 +55,10 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Postítulo 2027 (Venta)", tarea: "Contactar a personas interesadas para el postitulo", responsable: "Miguel Brito", vence: "31/10/2026", propone: "Miguel Brito", desde: "26/8/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Generar videos para campaña Postitulo 2027", tarea: "Hay 2 videos centrales que preparar: Video anzuelo que resuelve un problema e invita al postítulo. Video que explica de punta a punta el “cómo” del Postítulo.", responsable: "Alejandro Ortíz", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "2/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 63)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "7/9/2026", propone: "Marcelo Suárez", desde: "4/9/2026" },
-  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Dossier empresarial", tarea: "Armar un Dossier Informativo de la empresa", responsable: "Todos", vence: "31/8/2026", propone: "Marcelo Suárez", desde: "6/7/2026" },
+  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Dossier empresarial", tarea: "Armar un Dossier Informativo de la empresa", responsable: "Todos", vence: "11/9/2026", propone: "Marcelo Suárez", desde: "6/7/2026" },
   { reunion: "GIGNiT", estado: "", tema: "Brochure del Postítulo", tarea: "Rediseñar para colocar semipresencial, nuevo precio, nueva gráfica (formal, profesional, etc.)", responsable: "", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "7/9/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Formulario de Inscripción para Postítulo 2027", tarea: "Duplicar el anterior y colocar dato de CUIL.", responsable: "Miguel Brito", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "7/9/2026" },
-  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Acta (N° 64)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "9/9/2026", propone: "Marcelo Suárez", desde: "7/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 64)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "9/9/2026", propone: "Marcelo Suárez", desde: "7/9/2026" },
+  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "TPI: Trabajo Práctico Integrador", tarea: "Revisar y compartir en la clase del lunes 14/09 a los estudiantes", responsable: "Alejandro Ortíz", vence: "14/9/2026", propone: "Alejandro Ortíz", desde: "9/9/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Acta (N° 65)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "11/9/2026", propone: "Marcelo Suárez", desde: "9/9/2026" },
 ];
