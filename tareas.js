@@ -38,6 +38,8 @@ const TAREAS_MARCE = [
     vence: '13/9/2026', nota: 'Este domingo no: hasta el domingo 13.' },
   { id: 'presentacion-22',    dominio: 'Laboral', texto: 'Presentación del 22 de septiembre: diseño e impresión',
     vence: '22/9/2026', nota: 'Primero el diseño, después la imprenta. No dejarlo para el final.' },
+  { id: 'monotributo-ene27',  dominio: 'Laboral', texto: 'Monotributo: enviar los últimos 3 pagos',
+    vence: '30/1/2027', nota: 'El calendario te avisa el 23 de enero, una semana antes.' },
 ];
 
 // ───────── Guardado en el teléfono ─────────
