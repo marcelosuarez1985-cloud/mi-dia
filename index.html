@@ -472,15 +472,15 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=47"></script>
-<script src="comidas.js?v=47"></script>
-<script src="app.js?v=47"></script>
-<script src="salidas.js?v=47"></script>
-<script src="planes.js?v=47"></script>
-<script src="ejercicios.js?v=47"></script>
-<script src="reuniones-datos.js?v=47"></script>
-<script src="reuniones.js?v=47"></script>
-<script src="tareas.js?v=47"></script>
+<script src="programa.js?v=48"></script>
+<script src="comidas.js?v=48"></script>
+<script src="app.js?v=48"></script>
+<script src="salidas.js?v=48"></script>
+<script src="planes.js?v=48"></script>
+<script src="ejercicios.js?v=48"></script>
+<script src="reuniones-datos.js?v=48"></script>
+<script src="reuniones.js?v=48"></script>
+<script src="tareas.js?v=48"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -588,6 +588,18 @@ function dibujar(sinConexion) {
     html.push(`<div class="noche">
       <div class="grande">📵 Teléfono a cargar</div>
       <div class="chico">Estás en casa y pasaron las 22. Dejalo cargando hasta mañana.</div>
+    </div>`);
+  }
+
+  // ── Clase virtual: conectate, sin apuro ──
+  // No hay traslado ni GPS. Una tarjeta tranquila y tres avisos, nada más.
+  const virtual = Salidas.revisarConexion(EVENTOS, hoy);
+  if (virtual) {
+    const faltan = virtual.minIni - hoy.minutos;
+    html.push(`<div class="aviso calmo">
+      <div class="grande">💻 ${faltan > 0 ? 'Conectate a las ' + hhmm(virtual.minIni - CONECTAR_ANTES) : 'Ya arrancó'}</div>
+      <div class="chico">${esc(virtual.titulo)} · virtual, desde casa · ${
+        faltan > 0 ? 'empieza en ' + duracionTexto(faltan) : 'empezó ' + duracionTexto(-faltan) + ' atrás'}</div>
     </div>`);
   }
 

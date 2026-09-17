@@ -13,6 +13,7 @@ const AVISO_ANTES           = 5;    // min antes de la salida en que te empieza 
 const INSISTIR_CADA         = 2;    // cada cuántos min te vuelve a insistir si no saliste
 const RADIO_CASA            = 150;  // metros: más lejos que esto = ya saliste
 const VIGILAR_DESDE         = 25;   // min antes de la salida en que prende el GPS
+const CONECTAR_ANTES        = 15;   // min antes de una clase virtual en que te avisa que te conectes
 // ─────────────────────────────────────────────
 
 const NOMBRES_MES = ['enero','febrero','marzo','abril','mayo','junio','julio',

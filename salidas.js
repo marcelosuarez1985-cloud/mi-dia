@@ -121,6 +121,39 @@ const Salidas = {
       return mensaje;
     }
     return null;
+  },
+
+  // ───────── Clases virtuales: avisar para conectarse, sin insistir ─────────
+  // Cuando la clase es desde casa no hay traslado ni GPS. Marce se conecta
+  // 15 minutos antes, y pidió que el aviso sea "cada tanto", no como el de
+  // salir de casa que insiste cada dos minutos. Son tres avisos y listo:
+  // a los 15, a los 5 y a la hora. Devuelve la clase que toca, o null.
+  avisosConexion: {},
+  revisarConexion(eventos, hoy) {
+    const clase = eventos.find(ev =>
+      ev.clave === hoy.clave &&
+      ev.tipo === 'docencia' &&
+      ev.traslado === 0 && !ev.todoElDia &&
+      hoy.minutos >= ev.minIni - CONECTAR_ANTES &&
+      hoy.minutos <= ev.minIni + 5
+    );
+    if (!clase) return null;
+
+    const faltan = clase.minIni - hoy.minutos;
+    const dados = this.avisosConexion[clase.id] || (this.avisosConexion[clase.id] = new Set());
+    const escalones = [
+      [CONECTAR_ANTES, `Conectate a ${clase.titulo}: arranca en ${duracionTexto(faltan)}.`],
+      [5,              `${clase.titulo} arranca en 5 minutos. ¿Ya estás conectado?`],
+      [0,              `Es la hora de ${clase.titulo}.`]
+    ];
+    for (const [umbral, mensaje] of escalones) {
+      if (faltan <= umbral && !dados.has(umbral)) {
+        dados.add(umbral);
+        notificar(mensaje);
+        break;
+      }
+    }
+    return clase;
   }
 };
 
