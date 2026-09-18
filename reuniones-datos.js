@@ -8,13 +8,12 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-09-17';
+const REUNIONES_ACTUALIZADO = '2026-09-18';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "🔁Recurrente", tema: "Mastermind de Programa", tarea: "Tocar temas de programa.", responsable: "TODOS", vence: "25/5/2026", propone: "Marcelo Suárez", desde: "25/5/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Social Funnel", tarea: "Estoy en un curso de funnel de ventas. Lo voy a probar un mes con el curso de oratoria y luego ver cómo adaptarlo a cursos cortos y a la carrera para la siguiente campaña. Traeré comentarios y resultados en un mes aprox.", responsable: "Alejandro Ortíz", vence: "22/9/2026", propone: "Alejandro Ortíz", desde: "17/8/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Acta (N° 59)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "10/9/2026", propone: "Marcelo Suárez", desde: "7/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Acta (N° 60)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "14/9/2026", propone: "Marcelo Suárez", desde: "10/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Construcción de fichas de BUYER PERSONA", tarea: "Llamar a los que ya pasaron por la formación para que nos cuenten como le sirvió en su vida profesional las herramientas que aprendieron con nosotros.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Construcción de fichas de BUYER PERSONA", tarea: "Completar nosotros mismos nuestras experiencias con las personas diferentes profesiones.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "" },
@@ -66,5 +65,6 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Planes de Zoom", tarea: "contar la investigación y tomar una decisión.", responsable: "Todos", vence: "14/9/2026", propone: "Marcelo Suárez", desde: "14/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Mamapaloozza", tarea: "Acreditarse en la web https://mamapalooza.com.ar/", responsable: "Todos", vence: "21/9/2026", propone: "Alejandro Ortíz", desde: "14/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 67)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "16/9/2026", propone: "Marcelo Suárez", desde: "14/9/2026" },
-  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Acta (N° 68)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "18/9/2026", propone: "Marcelo Suárez", desde: "16/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 68)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "18/9/2026", propone: "Marcelo Suárez", desde: "16/9/2026" },
+  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Averiguar mesa para stand.", tarea: "", responsable: "Miguel Brito", vence: "21/9/2026", propone: "Miguel Brito", desde: "18/9/2026" },
 ];
