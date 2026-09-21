@@ -8,7 +8,7 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-09-19';
+const REUNIONES_ACTUALIZADO = '2026-09-21';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
@@ -59,12 +59,15 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Dossier empresarial", tarea: "Armar un Dossier Informativo de la empresa", responsable: "Todos", vence: "11/9/2026", propone: "Marcelo Suárez", desde: "6/7/2026" },
   { reunion: "GIGNiT", estado: "", tema: "Brochure del Postítulo", tarea: "Rediseñar para colocar semipresencial, nuevo precio, nueva gráfica (formal, profesional, etc.)", responsable: "", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "7/9/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Formulario de Inscripción para Postítulo 2027", tarea: "Duplicar el anterior y colocar dato de CUIL.", responsable: "Miguel Brito", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "7/9/2026" },
-  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "TPI: Trabajo Práctico Integrador", tarea: "Revisar y compartir en la clase del lunes 14/09 a los estudiantes", responsable: "Alejandro Ortíz", vence: "14/9/2026", propone: "Alejandro Ortíz", desde: "9/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 66)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "14/9/2026", propone: "Marcelo Suárez", desde: "11/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "TPI: Trabajo Práctico Integrador", tarea: "Revisar y compartir en la clase del lunes 14/09 a los estudiantes", responsable: "Alejandro Ortíz", vence: "14/9/2026", propone: "Alejandro Ortíz", desde: "9/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Planes de Zoom", tarea: "contar la investigación y tomar una decisión.", responsable: "Todos", vence: "14/9/2026", propone: "Marcelo Suárez", desde: "14/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 66)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "14/9/2026", propone: "Marcelo Suárez", desde: "11/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Mamapaloozza", tarea: "Acreditarse en la web https://mamapalooza.com.ar/", responsable: "Todos", vence: "21/9/2026", propone: "Alejandro Ortíz", desde: "14/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 67)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "16/9/2026", propone: "Marcelo Suárez", desde: "14/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 68)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "18/9/2026", propone: "Marcelo Suárez", desde: "16/9/2026" },
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Averiguar mesa para stand.", tarea: "", responsable: "Miguel Brito", vence: "21/9/2026", propone: "Miguel Brito", desde: "18/9/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Actas (N° 69)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "18/9/2026" },
+  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Armar la Sas", tarea: "Propongo pedirle presupuesto a mi contador sobre la creación de la Sas de GIGNiT", responsable: "Marcelo Suárez", vence: "23/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
+  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Planes de Zoom", tarea: "(Reabierto por una nueva posibilidad)", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
+  { reunion: "GIGNiT", estado: "⌛En cola", tema: "Clase “IAs para Emprendedores”", tarea: "Abrir la charla para los Coaches o futuros coaches para el postitulo", responsable: "Marcelo Suárez", vence: "25/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
 ];
