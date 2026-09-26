@@ -8,12 +8,17 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-09-24';
+const REUNIONES_ACTUALIZADO = '2026-09-26';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "🔁Recurrente", tema: "Mastermind de Programa", tarea: "Tocar temas de programa.", responsable: "TODOS", vence: "25/5/2026", propone: "Marcelo Suárez", desde: "25/5/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Social Funnel", tarea: "Estoy en un curso de funnel de ventas. Lo voy a probar un mes con el curso de oratoria y luego ver cómo adaptarlo a cursos cortos y a la carrera para la siguiente campaña. Traeré comentarios y resultados en un mes aprox.", responsable: "Alejandro Ortíz", vence: "22/9/2026", propone: "Alejandro Ortíz", desde: "17/8/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Acta (N° 62)", tarea: "Leerlo", responsable: "Fernando Ferrara", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "17/9/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Oficce 365", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Zoom Comercial", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Canva PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Actas (N° 63)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "24/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Construcción de fichas de BUYER PERSONA", tarea: "Llamar a los que ya pasaron por la formación para que nos cuenten como le sirvió en su vida profesional las herramientas que aprendieron con nosotros.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Construcción de fichas de BUYER PERSONA", tarea: "Completar nosotros mismos nuestras experiencias con las personas diferentes profesiones.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Construcción de fichas de BUYER PERSONA", tarea: "Fusionar estos 3 resultados en las fichas finales.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "" },
@@ -35,27 +40,18 @@ const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Inscripciones Marzo 2027", tarea: "Definir Precio.", responsable: "Alejandro Ortíz", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "14/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Inscripciones Marzo 2027", tarea: "Modificar Brochure.", responsable: "", vence: "", propone: "Alejandro Ortíz", desde: "14/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Inscripciones Marzo 2027", tarea: "Formulario de Inscripción.", responsable: "", vence: "", propone: "Alejandro Ortíz", desde: "14/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Acta (N° 61)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "17/9/2026", propone: "Marcelo Suárez", desde: "14/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "❌ Sin empezar", tema: "Apps para dinámicas", tarea: "Debatir qué dinámicas serían ideales para armar ciertas apps", responsable: "Todos", vence: "31/12/2026", propone: "Marcelo Suárez", desde: "17/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Responsable de Marketing", tarea: "Dar de baja a Ariana", responsable: "Marcelo Suárez", vence: "17/9/2026", propone: "Marcelo Suárez", desde: "17/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Nomenclatura para videos de la clase en la plataforma", tarea: "CLASE 01° - Apertura y Distinciones (Palabra “CLASE” en mayúscula, seguido del número de la clase con 2 dígitos, seguido de símbolo de grado °, seguido de un espacio, seguido de guión del medio, seguido de un espacio, seguido del nombre de la clase con mayúscula la primera letra y minúscula el resto de la oración) Marcelo se lo va a dar a Claude para que lo cambie en la plataforma.", responsable: "Marcelo Suárez", vence: "17/9/2026", propone: "Alejandro Ortíz", desde: "17/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Acta (N° 62)", tarea: "Leerlo", responsable: "Fernando Ferrara", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "17/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Oficce 365", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Zoom Comercial", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "❌ Sin empezar", tema: "Banners nuevos", tarea: "Diseñar e imprimir", responsable: "Alejandro Ortíz", vence: "31/10/2026", propone: "Alejandro Ortíz", desde: "17/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Gemini PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Canva PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Claude PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "", tema: "Secretario Ejecutivo", tarea: "Area de Marketing (Backup de material audivisual de la sede)", responsable: "", vence: "", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Curso coaching y liderazgo", tarea: "Armado", responsable: "Todos", vence: "28/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Curso coaching y liderazgo", tarea: "Lanzar campaña", responsable: "Todos", vence: "1/10/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "❌ Sin empezar", tema: "Libro de Actas (N° 63)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "24/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Cuota estudiantes a partir de Noviembre", tarea: "Avisar que el mes de Noviembre, la cuota es $130.000.-", responsable: "Todos", vence: "30/9/2026", propone: "Marcelo Suárez", desde: "24/9/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "❌ Sin empezar", tema: "Libro de Actas (N° 64)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "28/9/2026", propone: "Marcelo Suárez", desde: "24/9/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Diplomatura “Coaching para Líder de Equipos”", tarea: "Armar un nuevo curso", responsable: "Marcelo Suárez", vence: "30/8/2026", propone: "Marcelo Suárez", desde: "4/3/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Conferencia en el Mamapalooza", tarea: "El 22 de septiembre Ale realizará una conferencia. Es una oportunidad para que el equipo GIGNiT esté presente como sponsor. Tener en cuenta para preparar el stand, actividades y folletería.", responsable: "Todos", vence: "22/9/2026", propone: "Alejandro Ortíz", desde: "22/7/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Customer journey", tarea: "Hacer el paso N° 1 y 2 del viaje", responsable: "Alejandro Ortíz", vence: "30/9/2026", propone: "Marcelo Suárez", desde: "12/8/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Mamapaloozza", tarea: "Acreditarse en la web https://mamapalooza.com.ar/", responsable: "Todos", vence: "21/9/2026", propone: "Alejandro Ortíz", desde: "14/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Acta (N° 68)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "18/9/2026", propone: "Marcelo Suárez", desde: "16/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Averiguar mesa para stand.", tarea: "", responsable: "Miguel Brito", vence: "21/9/2026", propone: "Miguel Brito", desde: "18/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 69)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "18/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 70)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "23/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
