@@ -8,16 +8,11 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-09-28';
+const REUNIONES_ACTUALIZADO = '2026-09-30';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "🔁Recurrente", tema: "Mastermind de Programa", tarea: "Tocar temas de programa.", responsable: "TODOS", vence: "25/5/2026", propone: "Marcelo Suárez", desde: "25/5/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Social Funnel", tarea: "Estoy en un curso de funnel de ventas. Lo voy a probar un mes con el curso de oratoria y luego ver cómo adaptarlo a cursos cortos y a la carrera para la siguiente campaña. Traeré comentarios y resultados en un mes aprox.", responsable: "Alejandro Ortíz", vence: "22/9/2026", propone: "Alejandro Ortíz", desde: "17/8/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Acta (N° 62)", tarea: "Leerlo", responsable: "Fernando Ferrara", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "17/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Oficce 365", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Zoom Comercial", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
-  { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Canva PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Actas (N° 63)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "24/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Construcción de fichas de BUYER PERSONA", tarea: "Llamar a los que ya pasaron por la formación para que nos cuenten como le sirvió en su vida profesional las herramientas que aprendieron con nosotros.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Construcción de fichas de BUYER PERSONA", tarea: "Completar nosotros mismos nuestras experiencias con las personas diferentes profesiones.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "" },
@@ -48,17 +43,13 @@ const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Curso coaching y liderazgo", tarea: "Lanzar campaña", responsable: "Todos", vence: "1/10/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✏️ En proceso", tema: "Cuota estudiantes a partir de Noviembre", tarea: "Avisar que el mes de Noviembre, la cuota es $130.000.-", responsable: "Todos", vence: "30/9/2026", propone: "Marcelo Suárez", desde: "24/9/2026" },
   { reunion: "ECOA.RE Directorio", estado: "✅️ Listo", tema: "Libro de Actas (N° 64)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "28/9/2026", propone: "Marcelo Suárez", desde: "24/9/2026" },
+  { reunion: "ECOA.RE Directorio", estado: "❌ Sin empezar", tema: "Libro de Actas (N° 65)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "1/10/2026", propone: "Marcelo Suárez", desde: "28/9/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Diplomatura “Coaching para Líder de Equipos”", tarea: "Armar un nuevo curso", responsable: "Marcelo Suárez", vence: "30/8/2026", propone: "Marcelo Suárez", desde: "4/3/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Conferencia en el Mamapalooza", tarea: "El 22 de septiembre Ale realizará una conferencia. Es una oportunidad para que el equipo GIGNiT esté presente como sponsor. Tener en cuenta para preparar el stand, actividades y folletería.", responsable: "Todos", vence: "22/9/2026", propone: "Alejandro Ortíz", desde: "22/7/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Customer journey", tarea: "Hacer el paso N° 1 y 2 del viaje", responsable: "Alejandro Ortíz", vence: "30/9/2026", propone: "Marcelo Suárez", desde: "12/8/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Mamapaloozza", tarea: "Acreditarse en la web https://mamapalooza.com.ar/", responsable: "Todos", vence: "21/9/2026", propone: "Alejandro Ortíz", desde: "14/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Averiguar mesa para stand.", tarea: "", responsable: "Miguel Brito", vence: "21/9/2026", propone: "Miguel Brito", desde: "18/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 69)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "18/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 70)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "23/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Oficce 365", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "23/9/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Canva PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "23/9/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Curso “Coaching y Liderazgo” (intro al coaching)", tarea: "Debatir: temas, niveles, módulos, fecha de inicio.", responsable: "Marcelo Suárez", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "20/7/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Planes de Zoom", tarea: "(Reabierto por una nueva posibilidad)", responsable: "Marcelo Suárez", vence: "21/9/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "GIGNiT", estado: "🚮Descartado", tema: "Kit del Coach de Equipos", tarea: "Armar el material para darle formato para que sea fácilmente accesible para las campañas de marketing. Que se puedan descargar o bien acceder de manera online.", responsable: "Alejandro Ortíz", vence: "30/9/2026", propone: "Alejandro Ortíz", desde: "10/8/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Proyecto Podcast", tarea: "Con los audios de las clases, realizar un podcast.", responsable: "Alejandro Ortíz", vence: "31/10/2026", propone: "Alejandro Ortíz", desde: "6/3/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Página en LinkedIn", tarea: "Crear una página de empresa.", responsable: "Alejandro Ortíz", vence: "30/10/2026", propone: "Alejandro Ortíz", desde: "26/6/2026" },
@@ -79,5 +70,9 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Zoom Comercial", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "21/10/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Claude PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "1/10/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 71)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "28/9/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
-  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Actas (N° 72)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "30/9/2026", propone: "Marcelo Suárez", desde: "28/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 72)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "30/9/2026", propone: "Marcelo Suárez", desde: "28/9/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Actas (N° 73)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "2/10/2026", propone: "Marcelo Suárez", desde: "30/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Número de WhatsApp para contactos, cobros y campañas", tarea: "Definir desde qué número se gestionan contactos, cobros y campañas", responsable: "", vence: "30/9/2026", propone: "Marcelo Suárez", desde: "30/9/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Campañas en colaboración entre Instagram de ECOA.RE y GIGNiT", tarea: "Investigar la opción de socios de Instagram para publicar campañas en conjunto", responsable: "Alejandro Ortíz", vence: "", propone: "Alejandro Ortíz", desde: "30/9/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Conexión con la API de WhatsApp", tarea: "Averiguar cómo conectar la API de WhatsApp", responsable: "Alejandro Ortíz", vence: "", propone: "Marcelo Suárez", desde: "30/9/2026" },
 ];
