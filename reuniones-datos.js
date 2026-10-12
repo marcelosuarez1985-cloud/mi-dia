@@ -8,7 +8,7 @@
 //  El equipo sigue trabajando en Canva como siempre.
 // ═══════════════════════════════════════════════════════════
 
-const REUNIONES_ACTUALIZADO = '2026-10-09';
+const REUNIONES_ACTUALIZADO = '2026-10-12';
 const REUNIONES = ['ECOA.RE Directorio', 'GIGNiT'];
 
 const TEMAS = [
@@ -45,14 +45,8 @@ const TEMAS = [
   { reunion: "ECOA.RE Directorio", estado: "", tema: "Evento Cierre de Año", tarea: "Comenzar a hablar acerca de: catering, lugar, invitados, precios.", responsable: "Todos", vence: "15/10/2026", propone: "Alejandro Ortíz", desde: "8/10/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Diplomatura “Coaching para Líder de Equipos”", tarea: "Armar un nuevo curso", responsable: "Marcelo Suárez", vence: "30/8/2026", propone: "Marcelo Suárez", desde: "4/3/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Planificar clase 29 (Digital multiformatos)", tarea: "Diseñar clase con herramientas de la IA enfocados al diseño de negocio.", responsable: "Marcelo Suárez", vence: "12/10/2026", propone: "Marcelo Suárez", desde: "26/8/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Gemini PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "2/10/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Zoom Comercial", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "2/10/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Claude PRO", tarea: "Contratar", responsable: "Marcelo Suárez", vence: "2/10/2026", propone: "Marcelo Suárez", desde: "23/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 73)", tarea: "Leerlo", responsable: "Marcelo Suárez", vence: "2/10/2026", propone: "Marcelo Suárez", desde: "30/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Campañas en colaboración entre Instagram de ECOA.RE y GIGNiT", tarea: "Investigar la opción de socios de Instagram para publicar campañas en conjunto", responsable: "Alejandro Ortíz", vence: "2/10/2026", propone: "Alejandro Ortíz", desde: "30/9/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Traslado de los archivos de GIGNiT a los Drive de la empresa", tarea: "Ordenar y sincronizar la información de GIGNiT en el OneDrive y Google Drive de la empresa", responsable: "Marcelo Suárez", vence: "2/10/2026", propone: "Marcelo Suárez", desde: "30/9/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Clase “IAs para Emprendedores”", tarea: "Abrir la charla para los Coaches o futuros coaches para el postitulo", responsable: "Marcelo Suárez", vence: "18/10/2026", propone: "Marcelo Suárez", desde: "21/9/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 74)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "5/10/2026", propone: "Marcelo Suárez", desde: "2/10/2026" },
-  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas: nueva forma de registro", tarea: "Actas más resumidas (solo Tema, Tarea y Resolución) y marcar en esta hoja lo que quede sin responsable o sin fecha", responsable: "Marcelo Suárez", vence: "2/10/2026", propone: "Miguel Brito", desde: "2/10/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Libro de Actas (N° 75)", tarea: "Leerlo", responsable: "Miguel Brito", vence: "7/10/2026", propone: "Marcelo Suárez", desde: "5/10/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Cronograma del Postítulo (diagrama de Gantt)", tarea: "Ordenar las tareas del Postítulo con fecha de inicio y de qué tarea depende cada una", responsable: "Marcelo Suárez", vence: "7/10/2026", propone: "Alejandro Ortíz", desde: "5/10/2026" },
   { reunion: "GIGNiT", estado: "⌛En cola", tema: "Proyecto Podcast", tarea: "Con los audios de las clases, realizar un podcast.", responsable: "Alejandro Ortíz", vence: "31/10/2026", propone: "Alejandro Ortíz", desde: "6/3/2026" },
@@ -73,6 +67,7 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Presentación del DOSSIER GIGNiT", tarea: "Presentar el dossier final para el 2027", responsable: "Marcelo Suárez", vence: "9/10/2026", propone: "Marcelo Suárez", desde: "2/10/2026" },
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Imagen central del Postítulo", tarea: "Reemplazar la soga con nudos por fotos reales del equipo en el brochure, el formulario y la web", responsable: "Alejandro Ortíz", vence: "12/10/2026", propone: "Alejandro Ortíz", desde: "2/10/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Fee de la AACOP por el Postítulo", tarea: "Confirmar qué hay que pagarle a la AACOP y si el fee es mensual o un pago único", responsable: "Alejandro Ortíz", vence: "7/10/2026", propone: "Marcelo Suárez", desde: "2/10/2026" },
+  { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Clase «IAs para Emprendedores»: contenido", tarea: "Armar el contenido y la actividad de la clase del 19/10", responsable: "Marcelo Suárez", vence: "19/10/2026", propone: "Marcelo Suárez", desde: "5/10/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Salas fijas de Zoom de los Consejos", tarea: "Que todos puedan entrar a las salas desde la página compartida", responsable: "Todos", vence: "5/10/2026", propone: "Miguel Brito", desde: "5/10/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Circuito de cobros", tarea: "Confirmar a quién se pasan los cobros", responsable: "Todos", vence: "5/10/2026", propone: "Marcelo Suárez", desde: "5/10/2026" },
   { reunion: "GIGNiT", estado: "✅️ Listo", tema: "Reels de GIGNiT", tarea: "Publicar los reels sin colaboradores y con menos transiciones", responsable: "Miguel Brito", vence: "5/10/2026", propone: "Marcelo Suárez", desde: "5/10/2026" },
@@ -84,4 +79,9 @@ const TEMAS = [
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Flyer para clase IAs para Emprendedores", tarea: "Armar el flyer para difusión", responsable: "Alejandro Ortíz", vence: "12/10/2026", propone: "Marcelo Suárez", desde: "9/10/2026" },
   { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "App de Cobros", tarea: "Preparar la app de cobro para GIGNiT del año que viene", responsable: "Marcelo Suárez", vence: "15/1/2027", propone: "Alejandro Ortíz", desde: "9/10/2026" },
   { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Reserva de aula para Postítulo", tarea: "En diciembre, hablar con Charly de FLACSO para reservar los últimos lunes desde Marzo a Octubre para el postítulo.", responsable: "Alejandro Ortíz", vence: "31/12/2026", propone: "Alejandro Ortíz", desde: "9/10/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Libro de Actas (N° 77)", tarea: "Leerlo", responsable: "Alejandro Ortíz", vence: "14/10/2026", propone: "Marcelo Suárez", desde: "9/10/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Lineamientos de marca para cursos", tarea: "Agregar al manual de marca una leyenda para los cursos: hasta 2 tipografías y 3 paletas de colores", responsable: "Miguel Brito", vence: "", propone: "Marcelo Suárez", desde: "9/10/2026" },
+  { reunion: "GIGNiT", estado: "❌ Sin empezar", tema: "Sello de calidad ECO para empresas", tarea: "Incluir el sello ECO de la AACOP en la oferta para empresas (como mínimo, en la sección de empresas de la web)", responsable: "", vence: "", propone: "Miguel Brito", desde: "9/10/2026" },
+  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Canva del equipo conectado a Claude", tarea: "Conectar una cuenta de Canva del equipo a la cuenta de Claude de las empresas", responsable: "Alejandro Ortíz", vence: "", propone: "Marcelo Suárez", desde: "9/10/2026" },
+  { reunion: "GIGNiT", estado: "✏️ En proceso", tema: "Estudiante que se baja del Postítulo", tarea: "Conversar con la estudiante y, si el motivo es económico, ofrecerle una forma de pago para terminar", responsable: "Miguel Brito", vence: "10/10/2026", propone: "Miguel Brito", desde: "9/10/2026" },
 ];
