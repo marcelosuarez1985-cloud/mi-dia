@@ -66,10 +66,10 @@ function planesPara(ev, evsDelDia, hoy) {
   const planes = [];
   const ahora = hoy.minutos;
   const diaSemana = new Date(ev.clave + 'T12:00:00').getDay();
-  const esTrote = /trote/.test(ev.titulo.toLowerCase());
+  const esTrote = /trote|correr/.test(ev.titulo.toLowerCase());
 
   if (esTrote) {
-    // El trote del sábado tiene sus propias alternativas
+    // Salir a correr (sábado y martes) tiene sus propias alternativas
     const hueco = primerHueco(60, ahora + 15, evsDelDia, ev);
     if (hueco !== null) {
       planes.push({
@@ -78,11 +78,20 @@ function planesPara(ev, evsDelDia, hoy) {
         porque: 'No depende del horario de nadie, entrás y lo hacés.'
       });
     }
-    planes.push({
-      letra: 'C', que: 'Pasarlo al domingo temprano',
-      cuando: 'domingo a la mañana',
-      porque: 'Sólo si no te come el tiempo de familia. Si lo invade, no va.'
-    });
+    if (diaSemana === 6) {
+      planes.push({
+        letra: 'C', que: 'Pasarlo al domingo temprano',
+        cuando: 'domingo a la mañana',
+        porque: 'Sólo si no te come el tiempo de familia. Si lo invade, no va.'
+      });
+    } else {
+      // Entre semana no se pasa a otro día: el sábado ya tiene su salida.
+      planes.push({
+        letra: 'C', que: 'Correr más tarde, aunque sea 30 minutos',
+        cuando: 'a la tarde, cuando cierres el último bloque de trabajo',
+        porque: 'Media salida suma más que ninguna. Si tampoco entra, se anota y sigue.'
+      });
+    }
   } else {
     // 1) Clases del club que todavía no pasaron hoy
     for (const c of CLASES_CLUB) {

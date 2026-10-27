@@ -113,7 +113,7 @@ function detalleF1(titulo) {
 function clasificar(titulo) {
   const t = titulo.toLowerCase();
   if (deporteDe(titulo)) return 'deporte';
-  if (/musculaci|zumba|nataci|trote|gimnasio|cardio|yoga|stretching|cycle|movilidad|caminata|elongaci|bici|cinta/.test(t)) return 'entrenamiento';
+  if (/musculaci|zumba|nataci|trote|correr|gimnasio|cardio|yoga|stretching|cycle|movilidad|caminata|elongaci|bici|cinta/.test(t)) return 'entrenamiento';
   if (/comida|pausa|almuerzo|cena/.test(t)) return 'comida';
   if (/familia/.test(t)) return 'familia';
   if (/\btrabajo\b/.test(t)) return 'trabajo';
@@ -146,7 +146,7 @@ function lugarDe(ev, tipo) {
   if (ev.lugar) return ev.lugar;
   const t = ev.titulo.toLowerCase();
   if (/sportclub|flores|musculaci|zumba|nataci/.test(t)) return 'SportClub Flores';
-  if (/trote/.test(t)) return 'Salida desde casa';
+  if (/trote|correr/.test(t)) return 'Salida desde casa';
   // Las reuniones de consejo (GIGNiT y ECOA.RE) son todas virtuales.
   // Va antes que las sedes para que un título con un día de la semana no la mande a una sede.
   if (tipo === 'reunion') return 'Virtual';
