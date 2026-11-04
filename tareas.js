@@ -40,6 +40,12 @@ const TAREAS_MARCE = [
     vence: '22/9/2026', nota: 'Primero el diseño, después la imprenta. No dejarlo para el final.' },
   { id: 'monotributo-ene27',  dominio: 'Laboral', texto: 'Monotributo: enviar los últimos 3 pagos',
     vence: '30/1/2027', nota: 'El calendario te avisa el 23 de enero, una semana antes.' },
+  { id: 'inscripcion-sansilvestre', dominio: 'Salud', texto: 'Inscribirme en la San Silvestre 8K (eventick.com.ar/evento/470)',
+    vence: '15/11/2026', nota: 'Ya está abierta. No encontré fecha de cierre ni cupo: antes se cortaba la venta el 30/12, pero con cupo limitado. Mejor ahora que el último día.' },
+  { id: 'apto-sansilvestre', dominio: 'Salud', texto: 'Sacar el apto físico y subirlo a tu cuenta de Eventick (San Silvestre)',
+    vence: '30/11/2026', nota: 'Sin apto cargado no te dan el kit. Llevar también DNI y el pase de Eventick.' },
+  { id: 'kit-sansilvestre', dominio: 'Salud', texto: 'Retirar el kit de la San Silvestre en Parque Sarmiento (Balbín 4750)',
+    vence: '30/12/2026', nota: 'Las fechas todavía no están publicadas; otros años fue el 29 y 30/12. Confirmar en sansilvestrebuenosaires.com.' },
 ];
 
 // ───────── Guardado en el teléfono ─────────

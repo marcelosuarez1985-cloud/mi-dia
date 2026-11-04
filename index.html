@@ -348,6 +348,11 @@
   .correrNota { font-size: 13.5px; color: var(--texto-suave); margin: 4px 0 8px; }
   .correrPaso { font-size: 13px; color: var(--texto-suave); margin-top: 6px; line-height: 1.4; }
   .ejercicios { margin-top: 10px; }
+  .ejVer { display: block; font-size: 12.5px; color: var(--texto-suave); margin-top: 3px; line-height: 1.35; }
+  .ejVer.sirve b { color: #3f8f5f; }
+  .ejVer.poco b { color: #b8892b; }
+  .ejVer.nosuma b { color: var(--texto-suave); }
+  .ejResumen { font-size: 13px; color: var(--texto-suave); margin: 4px 0 8px; line-height: 1.4; }
   .ejGrupo {
     font-size: 11.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
     color: var(--texto-suave); margin: 11px 0 5px;
@@ -480,16 +485,17 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=63"></script>
-<script src="comidas.js?v=63"></script>
-<script src="app.js?v=63"></script>
-<script src="salidas.js?v=63"></script>
-<script src="planes.js?v=63"></script>
-<script src="ejercicios.js?v=63"></script>
-<script src="correr.js?v=63"></script>
-<script src="reuniones-datos.js?v=63"></script>
-<script src="reuniones.js?v=63"></script>
-<script src="tareas.js?v=63"></script>
+<script src="programa.js?v=64"></script>
+<script src="comidas.js?v=64"></script>
+<script src="app.js?v=64"></script>
+<script src="salidas.js?v=64"></script>
+<script src="planes.js?v=64"></script>
+<script src="ejercicios.js?v=64"></script>
+<script src="correr.js?v=64"></script>
+<script src="auditoria.js?v=64"></script>
+<script src="reuniones-datos.js?v=64"></script>
+<script src="reuniones.js?v=64"></script>
+<script src="tareas.js?v=64"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -1077,13 +1083,47 @@ function bloqueEjercicios(ev) {
   const fila = e => `<a href="${esc(videoDe(e))}" target="_blank" rel="noopener">
     <span>${esc(e.nombre)}<span class="ejDosis">${esc(e.dosis)}${
       e.descanso ? ' · descanso ' + esc(e.descanso) : ''}${
-      e.nota ? ' · ' + esc(e.nota) : ''}</span></span><span class="play">▶ ver</span></a>`;
-  let h = '<div class="ejercicios">';
+      e.nota ? ' · ' + esc(e.nota) : ''}</span>${veredictoDe(e)}</span><span class="play">▶ ver</span></a>`;
+  let h = '<div class="ejercicios">' + resumenSesion(sesion);
   h += '<div class="ejGrupo">Calentamiento</div>' + sesion.calentamiento.map(fila).join('');
   h += '<div class="ejGrupo">Principal</div>' + sesion.principal.map(fila).join('');
   h += `<div class="cumplio"><button onclick="verEjercicios('${esc(ev.id)}')">Ocultar</button></div></div>`;
   return h;
 }
+// ───────── Auditoría de la rutina y ejercicios extra para correr ─────────
+let EXTRAS_VISIBLE = false;
+const ROTULO_VER = { sirve: '✅ Sirve para correr', poco: '〰️ Suma poco', nosuma: '➖ No suma para correr' };
+
+function veredictoDe(e) {
+  if (typeof VEREDICTOS === 'undefined' || !VEREDICTOS[e.nombre]) return '';
+  const [tipo, por] = VEREDICTOS[e.nombre];
+  return `<span class="ejVer ${tipo}"><b>${ROTULO_VER[tipo]}.</b> ${esc(por)}</span>`;
+}
+
+function resumenSesion(sesion) {
+  if (typeof VEREDICTOS === 'undefined') return '';
+  const cuenta = { sirve: 0, poco: 0, nosuma: 0 };
+  [...sesion.calentamiento, ...sesion.principal].forEach(e => { if (VEREDICTOS[e.nombre]) cuenta[VEREDICTOS[e.nombre][0]]++; });
+  return `<div class="ejResumen">Para correr el 8K, de esta sesión: <b>${cuenta.sirve}</b> sirven, <b>${cuenta.poco}</b> suman poco y <b>${cuenta.nosuma}</b> no suman. Lo que falta está en "Salir a correr".</div>`;
+}
+
+function bloqueExtras() {
+  if (typeof EXTRAS_CORRER === 'undefined') return '';
+  if (!EXTRAS_VISIBLE) return `<div class="cumplio"><button onclick="verExtras()">💪 Lo que te falta para correr</button></div>`;
+  const fila = e => `<a href="${esc(videoExtra(e))}" target="_blank" rel="noopener">
+    <span>${esc(e.nombre)}<span class="ejDosis">${esc(e.dosis)}</span>
+    <span class="ejDosis"><b>Cuándo:</b> ${esc(e.cuando)}</span>
+    <span class="ejVer">${esc(e.para)}</span>
+    <span class="ejDosis"><i>Qué tan probado está: ${esc(e.firmeza)}</i></span></span><span class="play">▶ ver</span></a>`;
+  return `<div class="ejercicios"><div class="ejGrupo">Lo que el profe no te da y correr necesita</div>
+    ${EXTRAS_CORRER.map(fila).join('')}
+    <div class="ejGrupo">A tener en cuenta</div>
+    ${AVISOS_RUTINA.map(a => '<div class="correrPaso">• ' + esc(a) + '</div>').join('')}
+    <div class="correrNota">${esc(FIRMEZA_GENERAL)}</div>
+    <div class="cumplio"><button onclick="verExtras()">Ocultar</button></div></div>`;
+}
+function verExtras() { EXTRAS_VISIBLE = !EXTRAS_VISIBLE; dibujar(); }
+
 // ───────── Salir a correr: el entrenamiento del día ─────────
 let CORRER_ABIERTO = null;   // id de la salida desplegada
 
@@ -1112,6 +1152,7 @@ function bloqueCorrer(ev) {
     <div class="correrQue">${esc(p.que)}${p.min ? ' <span class="corrMin">' + p.min + ' min</span>' : ''}</div>
     ${p.nota ? '<div class="correrNota">' + esc(p.nota) + '</div>' : ''}
     ${pasos}
+    ${bloqueExtras()}
     <div class="cumplio"><button onclick="verCorrer('${esc(ev.id)}')">Ocultar</button></div></div>`;
 }
 function verCorrer(id) { CORRER_ABIERTO = (CORRER_ABIERTO === id) ? null : id; dibujar(); }
