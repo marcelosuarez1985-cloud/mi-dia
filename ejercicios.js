@@ -84,9 +84,48 @@ function sesionDelDia(clave) {
   return RUTINA.find(s => s.numero === numero) || null;
 }
 
-// Búsqueda pensada para que salga primero alguien explicando la postura,
-// no una compilación de gente entrenando.
+// Un video por ejercicio, elegido el 04/11/2026.
+//
+// Criterio: tutorial en castellano, de un canal reconocido, que muestre la
+// técnica de ese ejercicio y no una rutina entera. NO pude medir visitas ni
+// verlos enteros: busqué en YouTube, leí título y canal de cada candidato y
+// me quedé con el que viene de un canal más conocido. Si alguno no te cierra,
+// decime cuál y lo cambio.
+//
+// Los que no están en esta lista abren una búsqueda de YouTube ya escrita.
+const VIDEOS = {
+  'Crunch': 'hl9Yu7UZqHU',                                         // Esther Losilla
+  'Plancha lateral sobre codos': 'eqtilxuPKZg',                    // Amaiafit
+  'Extensiones en banco lumbar': 'atEI-PfmpBI',                    // Vitar Club
+  'Sentadilla búlgara con mancuernas': 'Xfa3Ql_NwmE',              // ATHLEAN-X Español
+  'Sentadilla + press vertical': 'Rgh15uWbbEM',                    // Men's Health España
+  'Remo en posición dividida con mancuerna': 'Pkr1WW3p05A',        // ATHLEAN-X Español
+  'Press de banco inclinado con mancuernas': 'oTD5g77GgSA',        // Your House Fitness
+  'Flexión de rodilla a una pierna': 'PPbjj-RtrJY',                // Entrenamiento.Pro
+  'Abductores en máquina': '2vCRMi-lgJ4',                          // Galvistrainer
+  'Extensión de codo sobre cabeza con disco': '1Ldwgg__Vvc',       // Entrenamiento Sputnik
+  'Plancha cruzando por debajo': 'xa1uO7OqWN4',                    // Goldman Salud
+  'Abdominales oblicuos rodilla flexionada': 'opo87zIgXcU',        // Ejercicios en Casa
+  'Pullover en polea alta': 'wi9cpIbasgE',                         // Vitar Club
+  'Patada atrás en polea baja': 'vHY4JUtKiFc',                     // Dr. Víctor López
+  'Tirón de polea': 'EO9AmI-bu_0',                                 // Fit Generation
+  'Vuelo lateral en máquina': 'oM27m1zdiA8',                       // David Ritter
+  'Isquiotibiales en máquina': 'CBCPBnMzsMI',                      // Vitar Club
+  'Aductores en máquina': 'KHoOH_klfDo',                           // Vida en Forma
+  'Curl de bíceps en banco Scott': 'MSqzyRDIbt8',                  // Manuel Escalera
+  'Swimming': 'TrhCFLMqL0w',                                       // Move to Excellence
+  'Peso muerto desde el suelo': 'kancsOn7CJY',                     // Fit Generation
+  'Subidas al cajón': 'E88WpLYnnSk',                               // Vitar Club
+  'Remo bajo en máquina': 'nwdptbhYjTw',                           // Dr. Víctor López
+  'Press de banco plano alterno con mancuernas': 'uii5wbbN99w',    // Dr. Víctor López
+  'Extensiones de rodilla en máquina': 'Q2-N3JmOQvI',              // Galvistrainer
+  'Extensión de codo con agarre en V': 'UQZdNqr5EhA',              // David Ritter
+  'Deltoides posterior en contractora': 'QaBNLN_RUNg'              // Tu Fisioterapeuta Fit
+};
+
 function videoDe(ejercicio) {
+  const id = VIDEOS[ejercicio.nombre];
+  if (id) return 'https://www.youtube.com/watch?v=' + id;
   const q = 'cómo hacer ' + (ejercicio.busca || ejercicio.nombre) + ' técnica correcta postura';
   return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
 }

@@ -340,6 +340,13 @@
   .semanaResumen .cifra b { display: block; font-size: 21px; color: var(--texto); font-weight: 700; }
 
   /* Ejercicios de la rutina */
+  .correr { margin-top: 10px; padding: 12px 14px; border-radius: 10px;
+    background: rgba(63,143,95,.10); border: 1px solid rgba(63,143,95,.35); }
+  .correrTit { font-size: 12px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--entrenamiento); }
+  .correrQue { font-size: 16px; font-weight: 600; margin: 6px 0 4px; line-height: 1.35; }
+  .corrMin { font-size: 12px; font-weight: 700; color: var(--entrenamiento); margin-left: 6px; }
+  .correrNota { font-size: 13.5px; color: var(--texto-suave); margin: 4px 0 8px; }
+  .correrPaso { font-size: 13px; color: var(--texto-suave); margin-top: 6px; line-height: 1.4; }
   .ejercicios { margin-top: 10px; }
   .ejGrupo {
     font-size: 11.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
@@ -473,15 +480,16 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=62"></script>
-<script src="comidas.js?v=62"></script>
-<script src="app.js?v=62"></script>
-<script src="salidas.js?v=62"></script>
-<script src="planes.js?v=62"></script>
-<script src="ejercicios.js?v=62"></script>
-<script src="reuniones-datos.js?v=62"></script>
-<script src="reuniones.js?v=62"></script>
-<script src="tareas.js?v=62"></script>
+<script src="programa.js?v=63"></script>
+<script src="comidas.js?v=63"></script>
+<script src="app.js?v=63"></script>
+<script src="salidas.js?v=63"></script>
+<script src="planes.js?v=63"></script>
+<script src="ejercicios.js?v=63"></script>
+<script src="correr.js?v=63"></script>
+<script src="reuniones-datos.js?v=63"></script>
+<script src="reuniones.js?v=63"></script>
+<script src="tareas.js?v=63"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -824,6 +832,7 @@ function tarjeta(ev, ahora, evsDelDia) {
     ${bloqueComida(ev)}
     ${bloqueCumplimiento(ev, ahora, evsDelDia || [])}
     ${bloqueEjercicios(ev)}
+    ${bloqueCorrer(ev)}
     ${bloqueTareasEnEvento(ev, evsDelDia || [])}
   </div>`;
 }
@@ -1075,6 +1084,38 @@ function bloqueEjercicios(ev) {
   h += `<div class="cumplio"><button onclick="verEjercicios('${esc(ev.id)}')">Ocultar</button></div></div>`;
   return h;
 }
+// ───────── Salir a correr: el entrenamiento del día ─────────
+let CORRER_ABIERTO = null;   // id de la salida desplegada
+
+function bloqueCorrer(ev) {
+  if (typeof entrenoDeCorrer !== 'function') return '';
+  if (!/correr|trote/i.test(ev.titulo)) return '';
+  const p = entrenoDeCorrer(ev.clave);
+  if (!p) return '';
+
+  const dias = diasParaLaCarrera(ev.clave);
+  const cuanto = p.tipo === 'carrera' ? '¡Es hoy!'
+    : dias <= 7 ? 'Falta menos de una semana'
+    : 'Faltan ' + Math.round(dias / 7) + ' semanas';
+
+  if (CORRER_ABIERTO !== ev.id) {
+    return `<div class="cumplio">
+      <button onclick="verCorrer('${esc(ev.id)}')">🏃 Ver el entrenamiento de hoy</button></div>`;
+  }
+  const pasos = p.tipo === 'carrera' ? '' : `
+    <div class="correrPaso"><b>Antes:</b> ${esc(CORRER_ENTRADA)}</div>
+    <div class="correrPaso"><b>Cómo:</b> a ritmo de conversación. Si no podés decir una frase entera sin ahogarte, andá más lento.</div>
+    <div class="correrPaso"><b>Después:</b> ${esc(CORRER_SALIDA)}</div>
+    <div class="correrPaso">Si algo te duele (no cansancio: dolor), cortá y caminá.</div>`;
+  return `<div class="correr">
+    <div class="correrTit">Semana ${p.semana} de 8 · ${p.tipo === 'carrera' ? esc(cuanto) : esc(cuanto) + ' para la San Silvestre'}</div>
+    <div class="correrQue">${esc(p.que)}${p.min ? ' <span class="corrMin">' + p.min + ' min</span>' : ''}</div>
+    ${p.nota ? '<div class="correrNota">' + esc(p.nota) + '</div>' : ''}
+    ${pasos}
+    <div class="cumplio"><button onclick="verCorrer('${esc(ev.id)}')">Ocultar</button></div></div>`;
+}
+function verCorrer(id) { CORRER_ABIERTO = (CORRER_ABIERTO === id) ? null : id; dibujar(); }
+
 function verEjercicios(id) { EJERCICIOS_ABIERTOS = (EJERCICIOS_ABIERTOS === id) ? null : id; dibujar(); }
 
 // ───────── ¿Lo hiciste? y los planes B/C si no ─────────
