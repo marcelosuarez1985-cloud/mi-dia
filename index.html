@@ -351,6 +351,7 @@
     background: #171e40; border: 1px solid var(--borde);
     color: var(--texto); text-decoration: none; font-size: 14px;
   }
+  .ejercicios a .ejDosis { display: block; font-size: 12.5px; color: var(--texto-suave); margin-top: 2px; }
   .ejercicios a span.play { color: var(--entrenamiento); font-size: 13px; font-weight: 600; flex-shrink: 0; }
 
   /* Días futuros desplegables */
@@ -472,15 +473,15 @@
   <div id="app"><div class="estado">Cargando…</div></div>
 </div>
 
-<script src="programa.js?v=61"></script>
-<script src="comidas.js?v=61"></script>
-<script src="app.js?v=61"></script>
-<script src="salidas.js?v=61"></script>
-<script src="planes.js?v=61"></script>
-<script src="ejercicios.js?v=61"></script>
-<script src="reuniones-datos.js?v=61"></script>
-<script src="reuniones.js?v=61"></script>
-<script src="tareas.js?v=61"></script>
+<script src="programa.js?v=62"></script>
+<script src="comidas.js?v=62"></script>
+<script src="app.js?v=62"></script>
+<script src="salidas.js?v=62"></script>
+<script src="planes.js?v=62"></script>
+<script src="ejercicios.js?v=62"></script>
+<script src="reuniones-datos.js?v=62"></script>
+<script src="reuniones.js?v=62"></script>
+<script src="tareas.js?v=62"></script>
 <script>
 let EVENTOS = [];
 let CRONOMETRO = null;
@@ -1051,30 +1052,30 @@ function detalleDelDia(evs, clave) {
 }
 
 // ───────── Ejercicios de la rutina ─────────
-let EJERCICIOS_ABIERTOS = false;
+let EJERCICIOS_ABIERTOS = null;   // id de la musculación desplegada
 
 function bloqueEjercicios(ev) {
-  if (typeof EJERCICIOS === 'undefined') return '';
-  // Sólo en musculación: natación, zumba y trote no usan la rutina de sala.
+  if (typeof RUTINA === 'undefined') return '';
+  // Sólo en musculación: natación y salir a correr no usan la rutina de sala.
   if (!/musculaci/i.test(ev.titulo)) return '';
+  const sesion = sesionDelDia(ev.clave);
+  if (!sesion) return '';
 
-  if (!EJERCICIOS_ABIERTOS) {
+  if (EJERCICIOS_ABIERTOS !== ev.id) {
     return `<div class="cumplio">
-      <button onclick="verEjercicios()">🏋️ Ver los ejercicios</button></div>`;
+      <button onclick="verEjercicios('${esc(ev.id)}')">🏋️ Ver la sesión ${sesion.numero}</button></div>`;
   }
-  const grupos = ejerciciosPorGrupo();
+  const fila = e => `<a href="${esc(videoDe(e))}" target="_blank" rel="noopener">
+    <span>${esc(e.nombre)}<span class="ejDosis">${esc(e.dosis)}${
+      e.descanso ? ' · descanso ' + esc(e.descanso) : ''}${
+      e.nota ? ' · ' + esc(e.nota) : ''}</span></span><span class="play">▶ ver</span></a>`;
   let h = '<div class="ejercicios">';
-  for (const g of Object.keys(grupos)) {
-    h += `<div class="ejGrupo">${esc(g)}</div>`;
-    for (const e of grupos[g]) {
-      h += `<a href="${esc(videoDe(e.nombre))}" target="_blank" rel="noopener">
-        <span>${esc(e.nombre)}</span><span class="play">▶ ver</span></a>`;
-    }
-  }
-  h += `<div class="cumplio"><button onclick="verEjercicios()">Ocultar</button></div></div>`;
+  h += '<div class="ejGrupo">Calentamiento</div>' + sesion.calentamiento.map(fila).join('');
+  h += '<div class="ejGrupo">Principal</div>' + sesion.principal.map(fila).join('');
+  h += `<div class="cumplio"><button onclick="verEjercicios('${esc(ev.id)}')">Ocultar</button></div></div>`;
   return h;
 }
-function verEjercicios() { EJERCICIOS_ABIERTOS = !EJERCICIOS_ABIERTOS; dibujar(); }
+function verEjercicios(id) { EJERCICIOS_ABIERTOS = (EJERCICIOS_ABIERTOS === id) ? null : id; dibujar(); }
 
 // ───────── ¿Lo hiciste? y los planes B/C si no ─────────
 let PLANES_ABIERTOS = null;   // id del entrenamiento cuyos planes están desplegados
