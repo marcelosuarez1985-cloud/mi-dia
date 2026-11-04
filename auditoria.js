@@ -76,10 +76,10 @@ const EXTRAS_CORRER = [
     cuando: 'Lunes o viernes en el gimnasio, al final', video: 'W8Yf1uyUnoM',
     para: 'Entrena el tronco para NO girar cuando la pierna y el brazo se cruzan. Lo hacés en la polea del club.',
     firmeza: 'Misma firmeza que el dead bug.' },
-  { nombre: 'Saltitos suaves (pogo)', dosis: '2 × 20 saltitos cortos, rápidos, sobre las puntas',
-    cuando: 'Sólo desde el martes 24/11, antes de correr', video: 'NR82-6hthGc',
+  { nombre: 'Saltitos suaves (pogo) — NO empezar sin visto bueno', dosis: '2 × 20 saltitos cortos, rápidos, sobre las puntas',
+    cuando: 'Postergado: sólo si un profesional lo aprueba. Con sobrepeso y sin correr este año, los saltos cargan mucho las articulaciones', video: 'NR82-6hthGc',
     para: 'Enseñan al tobillo y al gemelo a rebotar, como un resorte. Eso gasta menos energía al correr.',
-    firmeza: 'De lo mejor respaldado: una revisión de 31 estudios (2024) muestra un efecto chico a favor. Empezar tarde y suave.' },
+    firmeza: 'De lo mejor respaldado: una revisión de 31 estudios (2024) muestra un efecto chico a favor. Pero el impacto pesa más con sobrepeso: que lo decida un profesional.' },
   { nombre: 'Puntas de pie contra la pared (tibial)', dosis: '2 × 15',
     cuando: 'Opcional, martes', video: 'eqodTFUWxiw',
     para: 'La parte de adelante de la pierna. Ayuda si te molestan las canillas.',
@@ -91,6 +91,7 @@ const AVISOS_RUTINA = [
   'El viernes (sesión 3) tiene peso muerto, cajón y extensiones, y el sábado corrés lo largo. Si el viernes terminás con las piernas pesadas, bajá una serie en cada uno.',
   'Las dos últimas semanas (desde el lunes 14/12) pedile al profe menos series de piernas. La última sesión pesada de piernas, antes del jueves 24/12; la semana de la carrera, sólo suave.',
   'Si el profe puede, que alguna semana te dé series más pesadas y cortas (5 o 6 repeticiones) en peso muerto y búlgara: es lo que más mejora la economía al correr. Con cuidado y sin apuro.',
+  'Venís de no correr este año y con peso extra a cuidar: si una semana del plan de correr te cuesta o te duele, repetila en vez de avanzar. Terminar el 8K trotando y caminando también es terminarlo.',
   'El jueves de natación no se toca: es tu día de aflojar.'
 ];
 
