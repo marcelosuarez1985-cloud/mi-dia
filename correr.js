@@ -2,7 +2,7 @@
 //  Plan para correr — San Silvestre 8K, jueves 31/12/2026
 //
 //  Dos salidas por semana: martes (más corta) y sábado (la larga).
-//  Lunes, miércoles y viernes son las pesas de SportClub.
+//  Ya no hay gimnasio: lo demás se entrena en casa (a definir).
 //
 //  Cómo está pensado (armado el 04/11/2026, propuesta mía, NO de un profe):
 //

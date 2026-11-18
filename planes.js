@@ -11,17 +11,6 @@
 //    4. Descartar y anotarlo — sin culpa, sólo registro
 // ═══════════════════════════════════════════════════════════
 
-// Clases del SportClub Flores que sirven de reemplazo.
-// dias: 1 = lunes ... 6 = sábado
-const CLASES_CLUB = [
-  { nombre: 'Yoga terapéutica',    hora: 12 * 60, dur: 60, dias: [1, 5] },
-  { nombre: 'Cycle',               hora: 13 * 60, dur: 60, dias: [1, 2, 3, 4, 5] },
-  { nombre: 'Movilidad articular', hora: 14 * 60, dur: 60, dias: [2, 4] },
-  { nombre: 'Stretching',          hora: 15 * 60, dur: 60, dias: [1, 3, 5] }
-];
-
-const TRASLADO_CLUB = 5;   // tres cuadras
-
 // Un bloque de trabajo se corre; una reunión o una clase, no.
 function esMovible(ev) {
   return ev.tipo === 'trabajo';
@@ -31,7 +20,7 @@ function esMovible(ev) {
 const TIPOS_DUROS = ['reunion', 'docencia', 'familia'];
 
 // Qué se cruza con esa franja. Devuelve la lista, no un sí o un no:
-// casi todas las clases del club chocan con el bloque de comida, y esconderlas
+// (ya no se usa)
 // por eso dejaría a Marce sin ninguna opción.
 function choquesEn(desde, hasta, evsDelDia, excluir) {
   return evsDelDia.filter(e =>
@@ -70,58 +59,34 @@ function planesPara(ev, evsDelDia, hoy) {
 
   if (esTrote) {
     // Salir a correr (sábado y martes) tiene sus propias alternativas
-    const hueco = primerHueco(60, ahora + 15, evsDelDia, ev);
-    if (hueco !== null) {
-      planes.push({
-        letra: 'B', que: 'Cardio en el gimnasio (cinta o bici)',
-        cuando: hhmm(hueco) + '–' + hhmm(hueco + 60),
-        porque: 'No depende del horario de nadie, entrás y lo hacés.'
-      });
-    }
     if (diaSemana === 6) {
       planes.push({
-        letra: 'C', que: 'Pasarlo al domingo temprano',
+        letra: 'B', que: 'Pasarlo al domingo temprano',
         cuando: 'domingo a la mañana',
         porque: 'Sólo si no te come el tiempo de familia. Si lo invade, no va.'
       });
     } else {
       // Entre semana no se pasa a otro día: el sábado ya tiene su salida.
       planes.push({
-        letra: 'C', que: 'Correr más tarde, aunque sea 30 minutos',
+        letra: 'B', que: 'Correr más tarde, aunque sea 30 minutos',
         cuando: 'a la tarde, cuando cierres el último bloque de trabajo',
         porque: 'Media salida suma más que ninguna. Si tampoco entra, se anota y sigue.'
       });
     }
   } else {
-    // 1) Clases del club que todavía no pasaron hoy
-    for (const c of CLASES_CLUB) {
-      if (!c.dias.includes(diaSemana)) continue;
-      const salida = c.hora - TRASLADO_CLUB;
-      if (salida < ahora + 10) continue;                       // ya no llegás
-      const cruces = choquesEn(salida, c.hora + c.dur, evsDelDia, ev);
-      if (cruces.some(e => TIPOS_DUROS.includes(e.tipo))) continue;   // pisa algo que no se mueve
-      const molestos = cruces.filter(e => !esMovible(e));
-      planes.push({
-        letra: 'B', que: c.nombre + ' en el club',
-        cuando: hhmm(c.hora) + '–' + hhmm(c.hora + c.dur) + ' · salís ' + hhmm(salida),
-        porque: molestos.length
-          ? 'Tendrías que correr «' + molestos[0].titulo.replace(/^[^\wÁÉÍÓÚáéíóúÑñ]+/, '') + '».'
-          : 'Entra hoy mismo sin tocar nada de lo que ya tenés.'
-      });
-    }
-    // 2) Caminata en el primer hueco que aparezca
+    // 1) Caminata en el primer hueco que aparezca
     const hueco = primerHueco(40, ahora + 15, evsDelDia, ev);
     if (hueco !== null) {
       planes.push({
         letra: planes.length ? 'C' : 'B',
         que: 'Caminata de 30–40 minutos',
         cuando: hhmm(hueco) + '–' + hhmm(hueco + 40),
-        porque: 'No necesitás club ni horario. Mueve el bloque de trabajo si hace falta.'
+        porque: 'No necesitás ningún horario. Mueve el bloque de trabajo si hace falta.'
       });
     }
   }
 
-  // 3) Registrarlo y seguir
+  // 2) Registrarlo y seguir
   planes.push({
     letra: planes.length ? 'D' : 'B',
     que: 'Anotarlo como no cumplido',

@@ -29,7 +29,7 @@ impide que se suba por error.
 ## Reglas que aplica
 
 Traslados: clases de tarde/noche **2 h antes** · Parque Chacabuco **1 h 10** ·
-FLACSO **1 h** (no prepara nada) · gimnasio **5 min** · virtual **sin traslado**.
+FLACSO **1 h** (no prepara nada) · virtual **sin traslado**.
 
 Cierre del día: se calcula hacia atrás desde la primera actividad de mañana,
 restando 45 min de preparación, 7,5 h de sueño y 30 min para dormirse, con un

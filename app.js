@@ -113,7 +113,7 @@ function detalleF1(titulo) {
 function clasificar(titulo) {
   const t = titulo.toLowerCase();
   if (deporteDe(titulo)) return 'deporte';
-  if (/musculaci|zumba|nataci|trote|correr|gimnasio|cardio|yoga|stretching|cycle|movilidad|caminata|elongaci|bici|cinta/.test(t)) return 'entrenamiento';
+  if (/trote|correr|cardio|yoga|stretching|movilidad|caminata|elongaci|bici|cinta/.test(t)) return 'entrenamiento';
   if (/comida|pausa|almuerzo|cena/.test(t)) return 'comida';
   if (/familia/.test(t)) return 'familia';
   if (/\btrabajo\b/.test(t)) return 'trabajo';
@@ -126,14 +126,8 @@ function clasificar(titulo) {
 function minutosTraslado(titulo, lugar, tipo) {
   const t = (titulo + ' ' + (lugar || '')).toLowerCase();
   if (/virtual|zoom|meet|online/.test(t)) return 0;
-  if (tipo === 'entrenamiento') {
-    if (/casa|domicilio/.test(t)) return 0;
-    // Natación y Zumba son clases con horario fijo: hay que estar antes.
-    // Al club son 10 minutos. Natación pide 5 más para cambiarse.
-    if (/nataci/.test(t)) return 15;
-    if (/zumba/.test(t))  return 10;
-    return 5;    // musculación: entrás cuando llegás, no hay horario que perder
-  }
+  // Marce ya no va al gimnasio: entrena en casa o sale a correr desde casa.
+  if (tipo === 'entrenamiento') return 0;
   if (tipo === 'docencia') {
     if (/p\.c\.|parque chacabuco/.test(t)) return 70;   // cerca: ingresa 1 h antes
     if (/flacso/.test(t)) return 60;                    // en FLACSO no prepara nada: 1 h alcanza
@@ -145,7 +139,6 @@ function minutosTraslado(titulo, lugar, tipo) {
 function lugarDe(ev, tipo) {
   if (ev.lugar) return ev.lugar;
   const t = ev.titulo.toLowerCase();
-  if (/sportclub|flores|musculaci|zumba|nataci/.test(t)) return 'SportClub Flores';
   if (/trote|correr/.test(t)) return 'Salida desde casa';
   // Las reuniones de consejo (GIGNiT y ECOA.RE) son todas virtuales.
   // Va antes que las sedes para que un título con un día de la semana no la mande a una sede.
@@ -168,8 +161,12 @@ function distancia(lat1, lon1, lat2, lon2) {
 }
 
 // ───────── Normalizar los eventos que llegan de Google ─────────
+// Marce dejó el gimnasio (18/11/2026): lo que quede en el calendario de
+// SportClub / musculación / clases del club no se muestra ni cuenta.
+const ES_DEL_GIMNASIO = /sportclub|musculaci|gimnasio|zumba|nataci|cycle/i;
+
 function prepararEventos(crudos) {
-  return crudos.map(ev => {
+  return crudos.filter(ev => !ES_DEL_GIMNASIO.test(ev.titulo)).map(ev => {
     const ini = new Date(ev.inicio), fin = new Date(ev.fin);
     const pi = partes(ini), pf = partes(fin);
     const tipo = clasificar(ev.titulo);
