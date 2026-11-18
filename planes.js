@@ -19,9 +19,8 @@ function esMovible(ev) {
 // Compromisos que no se tocan: si una alternativa choca con esto, no se ofrece.
 const TIPOS_DUROS = ['reunion', 'docencia', 'familia'];
 
-// Qué se cruza con esa franja. Devuelve la lista, no un sí o un no:
-// (ya no se usa)
-// por eso dejaría a Marce sin ninguna opción.
+// Qué se cruza con esa franja. Devuelve la lista, no un sí o un no,
+// así se ve qué habría que mover.
 function choquesEn(desde, hasta, evsDelDia, excluir) {
   return evsDelDia.filter(e =>
     !e.todoElDia && e !== excluir &&
